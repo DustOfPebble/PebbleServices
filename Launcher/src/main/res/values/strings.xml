@@ -7,6 +7,9 @@
     <string name="MissedCalls">Calls count</string>
     <string name="MissedMessages">Messages count</string>
 
+    <string name="ServiceFunction">Monitoring missed events while Pebble is disconnected</string>
+    <string name="ServiceName">Missed Events Service</string>
+
     <string name="ID">Identifier</string>
 </resources>
 

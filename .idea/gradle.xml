@@ -10,7 +10,6 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/Launcher" />
-            <option value="$PROJECT_DIR$/MissedEvents" />
             <option value="$PROJECT_DIR$/PebbleLib" />
             <option value="$PROJECT_DIR$/Smartwatch" />
           </set>

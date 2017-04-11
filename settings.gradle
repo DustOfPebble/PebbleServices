@@ -1,1 +1,1 @@
-include ':Launcher', ':MissedEvents', ':Smartwatch', ':PebbleLib'
+include ':Launcher', ':Smartwatch', ':PebbleLib'
