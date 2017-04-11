@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">HeartSpy</string>
+    <string name="ServiceFunction">Managing an heart rate monitoring Bluetooth sensor</string>
+    <string name="ServiceName">HeartSpy Service</string>
+
+    <string name="WaitingMode">No Sensor active</string>
+    <string name="SearchingMode">Searching for a Sensor</string>
+    <string name="RunningMode">Listening to a Sensor</string>
+
+    <string name="ID">Identifier</string>
+</resources>
+
+

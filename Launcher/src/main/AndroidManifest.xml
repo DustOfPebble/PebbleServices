@@ -1,0 +1,25 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="lib.core.heartspy">
+    <application android:label="@string/app_name"
+        android:allowBackup="true"
+        android:icon="@mipmap/heartspy"
+        android:theme="@style/AppTheme"
+        >
+        <activity
+            android:name="lib.core.heartspy.StartupSettings"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:launchMode="singleInstance"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <service
+            android:description="@string/ServiceFunction"
+            android:label="@string/ServiceName"
+            android:name=".WeatherProvider"
+            android:exported="true"
+            android:icon="@mipmap/heartspy"
+            />
+    </application>
+</manifest>
