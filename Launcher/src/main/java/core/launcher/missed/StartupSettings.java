@@ -35,6 +35,9 @@ public class StartupSettings extends Activity implements  ServiceEvents,ServiceC
 
         // Checking permissions
         Permissions.Append(Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+        Permissions.Append(Manifest.permission.RECEIVE_SMS);
+        Permissions.Append(Manifest.permission.READ_PHONE_STATE);
+
         String Requested = Permissions.Selected();
         while (Requested != null) {
             if (CheckPermission(Permissions.Selected())) Permissions.setGranted();

@@ -72,7 +72,7 @@ public class MissedEventsProvider extends Service implements ServiceQueries, Eve
         EventSnapshot.putInt(MissedKey.MessagesID, MissedMessagesCount);
         Watch.push(EventSnapshot);
 
-        Connector.CallsCount(MissedMessagesCount);
+        Connector.MessagesCount(MissedMessagesCount);
     }
 
 
@@ -87,13 +87,15 @@ public class MissedEventsProvider extends Service implements ServiceQueries, Eve
         InfoCreator.setSmallIcon(R.drawable.missed_events);
         InfoCreator.setContentTitle(getText(R.string.ServiceName));
 
-        SystemListener = new NotificationsCatcher(this);
         Connector.RegisterProvider(this);
 
         Watch = new SmartWatchExtension(getBaseContext());
         ServiceStatus = (Watch.isConnected()? ServiceState.Connected:ServiceState.Disconnected);
 
         PushSystemNotification();
+
+        SystemListener = new NotificationsCatcher(this, getBaseContext());
+
     }
 
     @Override
