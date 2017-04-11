@@ -87,13 +87,13 @@ public class MissedEventsProvider extends Service implements ServiceQueries, Eve
         InfoCreator.setSmallIcon(R.drawable.missed_events);
         InfoCreator.setContentTitle(getText(R.string.ServiceName));
 
-        PushSystemNotification();
-
         SystemListener = new NotificationsCatcher(this);
         Connector.RegisterProvider(this);
 
         Watch = new SmartWatchExtension(getBaseContext());
         ServiceStatus = (Watch.isConnected()? ServiceState.Connected:ServiceState.Disconnected);
+
+        PushSystemNotification();
     }
 
     @Override
