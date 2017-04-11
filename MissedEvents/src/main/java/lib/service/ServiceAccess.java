@@ -7,24 +7,23 @@ public class ServiceAccess extends Binder {
 
     private String LogTag = this.getClass().getSimpleName();
 
-    private ServiceCommands Service = null;
-    private UpdateEvents Updater = null;
+    private ServiceQueries Queries = null;
+    private ServiceEvents Events = null;
 
-    public void RegisterProvider(ServiceCommands Provider) { Service = Provider; }
-    public void RegisterListener(UpdateEvents Listener) { Updater = Listener; }
+    public void RegisterProvider(ServiceQueries Provider) { Queries = Provider; }
+    public void RegisterListener(ServiceEvents Listener) { Events = Listener; }
 
-    public void SearchSensor() { Service.SearchSensor(); }
-    public void Stop() { Service.Stop(); }
-    public void Query() { Service.Query(); }
+    public void Query() { Queries.Query(); }
 
-    public void Update(int Value) {
-        try { Updater.Update(Value);}
-        catch (Exception Failed) { Log.d(LogTag, "Failed on Update event");}
+    public void CallsCount(int Count) {
+        try { Events.CallsCount(Count);}
+        catch (Exception Failed) { Log.d(LogTag, "Failed on MissedCalls event");}
     }
 
-    public void StateChanged(int State) {
-        try {Updater.StateChanged(State); }
-        catch (Exception Failed) { Log.d(LogTag, "Failed on StateChanged event");}
+    public void MessagesCount(int Count) {
+        try {
+            Events.MessagesCount(Count); }
+        catch (Exception Failed) { Log.d(LogTag, "Failed on MessagesCount event");}
     }
 
 }

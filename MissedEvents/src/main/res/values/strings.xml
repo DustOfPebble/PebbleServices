@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">SensorReader</string>
+    <string name="ServiceFunction">Monitoring missed events while Pebble is disconnected</string>
+    <string name="ServiceName">Missed Events Service</string>
 </resources>
