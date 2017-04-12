@@ -33,9 +33,9 @@ public class SmartWatchExtension implements SmartwatchEvents {
         if (!isWatchConnected) return;
         for (String key : Values.keySet()) {
             if (key == MissedKey.CallsID)
-                DataSet.update(SmartwatchConstants.MissedCalls, Values.getInt(key));
+                DataSet.update(SmartwatchConstants.CallsCount, Values.getByte(key));
             if (key == MissedKey.MessagesID)
-                DataSet.update(SmartwatchConstants.MissedMessages, Values.getInt(key));
+                DataSet.update(SmartwatchConstants.MessagesCount, Values.getByte(key));
         }
     }
 
