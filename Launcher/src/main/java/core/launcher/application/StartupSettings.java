@@ -23,7 +23,6 @@ public class StartupSettings extends Activity implements PhoneEventsUpdates,Serv
     private TextView MessagesCounter = null;
     private PhoneEventsAccess PhoneEventsService = null;
 
-
     private PermissionHelper Permissions = new PermissionHelper();
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,16 +95,24 @@ public class StartupSettings extends Activity implements PhoneEventsUpdates,Serv
      * **********************************************************************/
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
-        Log.d(LogTag, "Connected to " + name + " Service");
-        PhoneEventsService = (PhoneEventsAccess)service;
-        PhoneEventsService.RegisterListener(this);
-        PhoneEventsService.Query();
+        Log.d(LogTag, "Connected to " + name.getClassName() + " Service");
+
+        // Connection from PhoneEvents Service
+        if (PhoneEventsProvider.class.getName().equals(name.getClassName())) {
+            PhoneEventsService = (PhoneEventsAccess) service;
+            PhoneEventsService.RegisterListener(this);
+            PhoneEventsService.Query();
+        }
     }
 
     @Override
     public void onServiceDisconnected(ComponentName name) {
-        Log.d(LogTag, "Disconnected from " + name + " Service");
-        PhoneEventsService = null;
+        Log.d(LogTag, "Disconnected from " + name.getClassName()  + " Service");
+
+        // Disconnection from PhoneEvents Service
+        if (PhoneEventsProvider.class.getName().equals(name.getClassName())) {
+            PhoneEventsService = null;
+        }
     }
 
 }
