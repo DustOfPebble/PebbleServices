@@ -1,4 +1,4 @@
-package core.launcher.missed;
+package core.launcher.application;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -29,13 +29,27 @@ public class SmartWatchExtension implements SmartwatchEvents {
     }
 
     // On receive we do nothing because we are disconnected ...
-    void push(Bundle Values) {
+    public void push(Bundle Values) {
         if (!isWatchConnected) return;
         for (String key : Values.keySet()) {
-            if (key == MissedKey.CallsID)
-                DataSet.update(SmartwatchConstants.CallsCount, Values.getByte(key));
-            if (key == MissedKey.MessagesID)
-                DataSet.update(SmartwatchConstants.MessagesCount, Values.getByte(key));
+
+            // Managing data from PhoneEvents Service
+            if (key.equals(ServicesKeys.CallsID))
+                DataSet.update(SmartwatchConstants.CallsCount, Values.getByte(key), false);
+            if (key.equals(ServicesKeys.MessagesID))
+                DataSet.update(SmartwatchConstants.MessagesCount, Values.getByte(key), false);
+
+            // Managing data from Weather Service
+            if (key.equals(ServicesKeys.WeatherID))
+                DataSet.update(SmartwatchConstants.WeatherSkyNow, Values.getByte(key), false);
+            if (key.equals(ServicesKeys.TemperatureID))
+                DataSet.update(SmartwatchConstants.WeatherTemperatureNow, Values.getByte(key), true);
+            if (key.equals(ServicesKeys.TemperatureMaxID))
+                DataSet.update(SmartwatchConstants.WeatherTemperatureMax, Values.getByte(key), true);
+            if (key.equals(ServicesKeys.TemperatureMinID))
+                DataSet.update(SmartwatchConstants.WeatherTemperatureMin, Values.getByte(key), true);
+            if (key.equals(ServicesKeys.LocationNameID))
+                DataSet.update(SmartwatchConstants.WeatherLocationName, Values.getString(key));
         }
     }
 
@@ -45,7 +59,7 @@ public class SmartWatchExtension implements SmartwatchEvents {
     @Override
     public void ConnectedStateChanged(Boolean ConnectState) {
         isWatchConnected = ConnectState;
-        if (isWatchConnected == false) return;
+        if (!isWatchConnected) return;
         if (DataSet.size() == 0) return;
         WatchConnector.send(DataSet);
     }

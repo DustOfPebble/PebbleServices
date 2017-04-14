@@ -1,4 +1,4 @@
-package core.launcher.missed;
+package core.launcher.application;
 
 import android.Manifest;
 import android.app.Activity;
@@ -11,18 +11,19 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.TextView;
 
-import java.security.Permission;
+import core.service.PhoneEvents.PhoneEventsProvider;
+import core.service.PhoneEvents.PhoneEventsAccess;
+import core.service.PhoneEvents.PhoneEventsUpdates;
 
-import lib.service.ServiceAccess;
-import lib.service.ServiceEvents;
-
-public class StartupSettings extends Activity implements  ServiceEvents,ServiceConnection {
+public class StartupSettings extends Activity implements PhoneEventsUpdates,ServiceConnection {
 
     private String LogTag = this.getClass().getSimpleName();
 
     private TextView CallsCounter = null;
     private TextView MessagesCounter = null;
-    private ServiceAccess EventsService = null;
+    private PhoneEventsAccess PhoneEventsService = null;
+
+
     private PermissionHelper Permissions = new PermissionHelper();
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,14 +53,15 @@ public class StartupSettings extends Activity implements  ServiceEvents,ServiceC
     private void StartComponents(){
         // Start Service
         Log.d(LogTag, "Requesting Service to start...");
-        Intent ServiceStarter = new Intent(this, MissedEventsProvider.class);
+        Intent ServiceStarter = new Intent(this, PhoneEventsProvider.class);
         startService(ServiceStarter);
         bindService(ServiceStarter, this, 0);
     }
 
-     /************************************************************************
-     * Handler Callback implementation to manage update from Sensor service
-     * **********************************************************************/
+    /************************************************************************
+    * Handler Callback implementation to manage update from Services Events
+    * **********************************************************************/
+
     @Override
     public void CallsCount(int Count) { CallsCounter.setText(String.valueOf(Count)); }
 
@@ -70,8 +72,7 @@ public class StartupSettings extends Activity implements  ServiceEvents,ServiceC
      * Managing requested permissions at runtime
      * **********************************************************************/
     private boolean CheckPermission(String RequestedPermission) {
-        if (this.checkSelfPermission(RequestedPermission) != PackageManager.PERMISSION_GRANTED)  return false;
-        return true;
+        return this.checkSelfPermission(RequestedPermission) == PackageManager.PERMISSION_GRANTED;
     }
 
     @Override
@@ -95,16 +96,16 @@ public class StartupSettings extends Activity implements  ServiceEvents,ServiceC
      * **********************************************************************/
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
-        EventsService = (ServiceAccess)service;
-        Log.d(LogTag, "Connected to Missed Events Service");
-        EventsService.RegisterListener(this);
-        EventsService.Query();
+        Log.d(LogTag, "Connected to " + name + " Service");
+        PhoneEventsService = (PhoneEventsAccess)service;
+        PhoneEventsService.RegisterListener(this);
+        PhoneEventsService.Query();
     }
 
     @Override
     public void onServiceDisconnected(ComponentName name) {
-        EventsService = null;
-        Log.d(LogTag, "Disconnected from Missed Events Service");
+        Log.d(LogTag, "Disconnected from " + name + " Service");
+        PhoneEventsService = null;
     }
 
 }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Missed Events</string>
+    <string name="app_name">Pebble Services</string>
 
     <string name="Connected">Smartwatch is connected</string>
     <string name="Disconnected">Smartwatch is not connected</string>
@@ -7,8 +7,11 @@
     <string name="MissedCalls">Calls count</string>
     <string name="MissedMessages">Messages count</string>
 
-    <string name="ServiceFunction">Monitoring missed events while Pebble is disconnected</string>
-    <string name="ServiceName">Missed Events Service</string>
+    <string name="ServicePhoneEvents">Monitoring missed events while Pebble is disconnected</string>
+    <string name="ServicePhoneEventsName">Calls and Messages</string>
+
+    <string name="ServiceWeather">Update Weather forecast from OpenWeatherMap</string>
+    <string name="ServiceWeatherName">Weather and Forecast</string>
 
     <string name="ID">Identifier</string>
 </resources>

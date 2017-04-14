@@ -1,4 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="core.launcher.missed">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="core.launcher.application">
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <uses-permission android:name="android.permission.RECEIVE_SMS"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -9,7 +9,7 @@
         android:theme="@style/AppTheme"
     >
         <activity
-            android:name="core.launcher.missed.StartupSettings"
+            android:name="core.launcher.application.StartupSettings"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleInstance"
             >
@@ -19,11 +19,18 @@
             </intent-filter>
         </activity>
         <service
-            android:description="@string/ServiceFunction"
-            android:label="@string/ServiceName"
-            android:name=".MissedEventsProvider"
+            android:description="@string/ServicePhoneEvents"
+            android:label="@string/ServicePhoneEventsName"
+            android:name="core.service.PhoneEvents.PhoneEventsProvider"
             android:exported="true"
-            android:icon="@mipmap/launcher"
+            android:icon="@mipmap/phone_service"
+            />
+        <service
+            android:description="@string/ServiceWeather"
+            android:label="@string/ServiceWeatherName"
+            android:name="core.service.Weather.WeatherProvider"
+            android:exported="true"
+            android:icon="@mipmap/weather_service"
             />
     </application>
 </manifest>

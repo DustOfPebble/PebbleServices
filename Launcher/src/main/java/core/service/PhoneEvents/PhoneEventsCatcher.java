@@ -1,4 +1,4 @@
-package lib.service;
+package core.service.PhoneEvents;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -7,24 +7,27 @@ import android.content.IntentFilter;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
-public class NotificationsCatcher extends BroadcastReceiver {
+public class PhoneEventsCatcher extends BroadcastReceiver {
 
     private String LogTag = this.getClass().getSimpleName();
 
     private static final String SMS = "android.provider.Telephony.SMS_RECEIVED";
     private static final String CALL = "android.intent.action.PHONE_STATE";
 
-    private EventsCatcher EventManager;
+    private PhoneEventsProvider EventManager;
     private IntentFilter EventFilters = new IntentFilter();
 
     private boolean hasRing = false;
     private boolean hasPickUp = false;
 
 
-    public NotificationsCatcher(EventsCatcher Listener, Context ServiceContext) {
+    public PhoneEventsCatcher(PhoneEventsProvider Listener ) {
         EventManager = Listener;
         EventFilters.addAction(SMS);
         EventFilters.addAction(CALL);
+    }
+
+    public void enableReceiver(Context ServiceContext) {
         ServiceContext.registerReceiver(this, EventFilters);
     }
 

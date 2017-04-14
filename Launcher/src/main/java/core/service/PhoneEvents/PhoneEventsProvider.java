@@ -1,4 +1,4 @@
-package core.launcher.missed;
+package core.service.PhoneEvents;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -8,73 +8,69 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
-import lib.service.EventsCatcher;
-import lib.service.NotificationsCatcher;
-import lib.service.ServiceAccess;
-import lib.service.ServiceQueries;
-import lib.service.ServiceState;
+import core.launcher.application.R;
+import core.launcher.application.ServicesKeys;
+import core.launcher.application.SmartWatchExtension;
+import core.launcher.application.WatchState;
 import lib.smartwatch.SmartwatchEvents;
 
-public class MissedEventsProvider extends Service implements ServiceQueries, EventsCatcher, SmartwatchEvents {
+public class PhoneEventsProvider extends Service implements PhoneEventsQueries, SmartwatchEvents {
 
     private String LogTag = this.getClass().getSimpleName();
 
     private NotificationManager InfoProvider;
     private Notification.Builder InfoCreator;
 
-    private NotificationsCatcher SystemListener = null;
-
     private SmartWatchExtension Watch = null;
 
-    private ServiceAccess Connector=null;
+    private PhoneEventsAccess Connector=null;
 
-    private int ServiceStatus = ServiceState.Disconnected;
+    private PhoneEventsCatcher PhoneEvents = null;
+
+    private int WatchStatus = WatchState.Disconnected;
     private int MissedCallsCount = 0;
     private int MissedMessagesCount =0;
 
     private Bundle EventSnapshot = null;
 
-    public MissedEventsProvider(){
+    public PhoneEventsProvider(){
         EventSnapshot = new Bundle();
-        Connector = new ServiceAccess();
+        Connector = new PhoneEventsAccess();
     }
 
     private void PushSystemNotification() {
         int  Info = -1;
-        if (ServiceStatus == ServiceState.Connected) Info = R.string.Connected;
-        if (ServiceStatus == ServiceState.Disconnected) Info = R.string.Disconnected;
+        if (WatchStatus == WatchState.Connected) Info = R.string.Connected;
+        if (WatchStatus == WatchState.Disconnected) Info = R.string.Disconnected;
 
         InfoCreator.setContentText(getText(Info));
         InfoProvider.notify(R.string.ID,InfoCreator.build());
     }
 
     /**************************************************************
-     *  Callbacks implementation from Notification Listener
+     *  Direct Callbacks implementation from PhoneEventsCatcher
      *  - Missed Calls
      *  - Missed Messages
      **************************************************************/
-    @Override
     public void Call() {
         EventSnapshot.clear();
         MissedCallsCount++;
-        EventSnapshot.putInt(MissedKey.CallsID, MissedCallsCount);
-        EventSnapshot.putInt(MissedKey.MessagesID, MissedMessagesCount);
+        EventSnapshot.putInt(ServicesKeys.CallsID, MissedCallsCount);
+        EventSnapshot.putInt(ServicesKeys.MessagesID, MissedMessagesCount);
         Watch.push(EventSnapshot);
 
         Connector.CallsCount(MissedCallsCount);
     }
 
-    @Override
     public void Message() {
         EventSnapshot.clear();
         MissedMessagesCount++;
-        EventSnapshot.putInt(MissedKey.CallsID, MissedCallsCount);
-        EventSnapshot.putInt(MissedKey.MessagesID, MissedMessagesCount);
+        EventSnapshot.putInt(ServicesKeys.CallsID, MissedCallsCount);
+        EventSnapshot.putInt(ServicesKeys.MessagesID, MissedMessagesCount);
         Watch.push(EventSnapshot);
 
         Connector.MessagesCount(MissedMessagesCount);
     }
-
 
     /**************************************************************
      *  Callbacks implementation for Service management
@@ -84,18 +80,18 @@ public class MissedEventsProvider extends Service implements ServiceQueries, Eve
         super.onCreate();
         InfoProvider = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         InfoCreator = new Notification.Builder(this);
-        InfoCreator.setSmallIcon(R.drawable.missed_events);
-        InfoCreator.setContentTitle(getText(R.string.ServiceName));
+        InfoCreator.setSmallIcon(R.drawable.phone_events);
+        InfoCreator.setContentTitle(getText(R.string.ServicePhoneEventsName));
 
         Connector.RegisterProvider(this);
 
         Watch = new SmartWatchExtension(getBaseContext());
-        ServiceStatus = (Watch.isConnected()? ServiceState.Connected:ServiceState.Disconnected);
+        WatchStatus = (Watch.isConnected()? WatchState.Connected: WatchState.Disconnected);
 
         PushSystemNotification();
 
-        SystemListener = new NotificationsCatcher(this, getBaseContext());
-
+        PhoneEvents = new PhoneEventsCatcher(this);
+        PhoneEvents.enableReceiver(getBaseContext());
     }
 
     @Override
@@ -130,18 +126,17 @@ public class MissedEventsProvider extends Service implements ServiceQueries, Eve
      *  Callbacks implementation Smartwatch connection state
      **************************************************************/
     @Override
-    public void ConnectedStateChanged(Boolean ConnectState) {
-        if (ConnectState == false) {
+    public void ConnectedStateChanged(Boolean isConnected) {
+        if (isConnected) {
             MissedCallsCount = 0;
             MissedMessagesCount = 0;
-            ServiceStatus = ServiceState.Disconnected;
+            WatchStatus = WatchState.Disconnected;
             PushSystemNotification();
             return;
         }
 
-        ServiceStatus = ServiceState.Connected;
+        WatchStatus = WatchState.Connected;
         PushSystemNotification();
-        return;
     }
 
 

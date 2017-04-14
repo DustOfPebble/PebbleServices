@@ -1,6 +1,5 @@
-package core.launcher.missed;
+package core.launcher.application;
 
-import android.Manifest;
 import java.util.ArrayList;
 
 public class PermissionHelper {
