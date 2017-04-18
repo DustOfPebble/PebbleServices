@@ -1,4 +1,4 @@
-package core.service.Weather;
+package core.services.Weather;
 
 public interface WeatherUpdates {
     void Weather(int IconID, String LocationName);

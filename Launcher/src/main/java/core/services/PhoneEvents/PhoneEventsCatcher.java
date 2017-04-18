@@ -1,4 +1,4 @@
-package core.service.PhoneEvents;
+package core.services.PhoneEvents;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

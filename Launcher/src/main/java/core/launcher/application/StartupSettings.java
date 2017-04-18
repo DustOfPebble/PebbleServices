@@ -11,17 +11,21 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.TextView;
 
-import core.service.PhoneEvents.PhoneEventsProvider;
-import core.service.PhoneEvents.PhoneEventsAccess;
-import core.service.PhoneEvents.PhoneEventsUpdates;
+import core.services.PhoneEvents.PhoneEventsProvider;
+import core.services.PhoneEvents.PhoneEventsAccess;
+import core.services.PhoneEvents.PhoneEventsUpdates;
+import core.services.Weather.WeatherAccess;
+import core.services.Weather.WeatherProvider;
+import core.services.Weather.WeatherUpdates;
 
-public class StartupSettings extends Activity implements PhoneEventsUpdates,ServiceConnection {
+public class StartupSettings extends Activity implements PhoneEventsUpdates, WeatherUpdates,ServiceConnection {
 
     private String LogTag = this.getClass().getSimpleName();
 
     private TextView CallsCounter = null;
     private TextView MessagesCounter = null;
     private PhoneEventsAccess PhoneEventsService = null;
+    private WeatherAccess WeatherService = null;
 
     private PermissionHelper Permissions = new PermissionHelper();
 
@@ -34,9 +38,10 @@ public class StartupSettings extends Activity implements PhoneEventsUpdates,Serv
         MessagesCounter = (TextView) findViewById(R.id.MessagesCount);
 
         // Checking permissions
-        Permissions.Append(Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
         Permissions.Append(Manifest.permission.RECEIVE_SMS);
         Permissions.Append(Manifest.permission.READ_PHONE_STATE);
+        Permissions.Append(Manifest.permission.INTERNET);
+        Permissions.Append(Manifest.permission.ACCESS_NETWORK_STATE);
 
         String Requested = Permissions.Selected();
         while (Requested != null) {
@@ -46,28 +51,38 @@ public class StartupSettings extends Activity implements PhoneEventsUpdates,Serv
         }
         String[] NotGrantedPermissions = Permissions.NotGranted();
         if (NotGrantedPermissions.length > 0) requestPermissions(NotGrantedPermissions,0);
-        else StartComponents();
+        else StartServices();
     }
 
-    private void StartComponents(){
+    @Override
+    protected void onResume() {
+        super.onResume();
+        StartServices();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(LogTag, "Closing connection with Services ...");
+        unbindService(this);
+    }
+
+    private void StartServices(){
+        Intent ServiceStarter;
+
         // Start Service
-        Log.d(LogTag, "Requesting Service to start...");
-        Intent ServiceStarter = new Intent(this, PhoneEventsProvider.class);
+        ServiceStarter = new Intent(this, PhoneEventsProvider.class);
+        Log.d(LogTag, "Requesting Service ["+ PhoneEventsProvider.class.getSimpleName() +"] to start...");
+        startService(ServiceStarter);
+        bindService(ServiceStarter, this, 0);
+
+        ServiceStarter = new Intent(this, WeatherProvider.class);
+        Log.d(LogTag, "Requesting Service ["+ WeatherProvider.class.getSimpleName() +"] to start...");
         startService(ServiceStarter);
         bindService(ServiceStarter, this, 0);
     }
 
-    /************************************************************************
-    * Handler Callback implementation to manage update from Services Events
-    * **********************************************************************/
-
-    @Override
-    public void CallsCount(int Count) { CallsCounter.setText(String.valueOf(Count)); }
-
-    @Override
-    public void MessagesCount(int Count) { MessagesCounter.setText(String.valueOf(Count)); }
-
-    /************************************************************************
+     /************************************************************************
      * Managing requested permissions at runtime
      * **********************************************************************/
     private boolean CheckPermission(String RequestedPermission) {
@@ -86,7 +101,7 @@ public class StartupSettings extends Activity implements PhoneEventsUpdates,Serv
             }
         }
 
-        if (PermissionsGranted) StartComponents();
+        if (PermissionsGranted) StartServices();
         else finish();
     }
 
@@ -103,6 +118,13 @@ public class StartupSettings extends Activity implements PhoneEventsUpdates,Serv
             PhoneEventsService.RegisterListener(this);
             PhoneEventsService.Query();
         }
+
+        // Connection from PhoneEvents Service
+        if (WeatherProvider.class.getName().equals(name.getClassName())) {
+            WeatherService = (WeatherAccess) service;
+            WeatherService.RegisterListener(this);
+            WeatherService.Query();
+        }
     }
 
     @Override
@@ -113,7 +135,28 @@ public class StartupSettings extends Activity implements PhoneEventsUpdates,Serv
         if (PhoneEventsProvider.class.getName().equals(name.getClassName())) {
             PhoneEventsService = null;
         }
+
+        // Disconnection from PhoneEvents Service
+        if (WeatherProvider.class.getName().equals(name.getClassName())) {
+            WeatherService = null;
+        }
     }
 
+    /************************************************************************
+     * Callback implementation to manage update from PhoneEvents Service
+     * **********************************************************************/
+    @Override
+    public void CallsCount(int Count) { CallsCounter.setText(String.valueOf(Count)); }
+
+    @Override
+    public void MessagesCount(int Count) { MessagesCounter.setText(String.valueOf(Count)); }
+
+    /************************************************************************
+     * Callback implementation to manage update from Weather Service
+     * **********************************************************************/
+    @Override
+    public void Weather(int IconID, String LocationName) {}
+    @Override
+    public void Temperatures(double Now, double Max, double Min) {}
 }
 

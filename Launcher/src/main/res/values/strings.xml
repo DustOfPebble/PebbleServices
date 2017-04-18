@@ -12,8 +12,6 @@
 
     <string name="ServiceWeather">Update Weather forecast from OpenWeatherMap</string>
     <string name="ServiceWeatherName">Weather and Forecast</string>
-
-    <string name="ID">Identifier</string>
 </resources>
 
 

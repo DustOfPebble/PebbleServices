@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="core.launcher.application">
-    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <uses-permission android:name="android.permission.RECEIVE_SMS"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <application android:label="@string/app_name"
         android:allowBackup="true"
         android:icon="@mipmap/launcher"
@@ -21,16 +21,15 @@
         <service
             android:description="@string/ServicePhoneEvents"
             android:label="@string/ServicePhoneEventsName"
-            android:name="core.service.PhoneEvents.PhoneEventsProvider"
+            android:name="core.services.PhoneEvents.PhoneEventsProvider"
             android:exported="true"
-            android:icon="@mipmap/phone_service"
             />
         <service
             android:description="@string/ServiceWeather"
             android:label="@string/ServiceWeatherName"
-            android:name="core.service.Weather.WeatherProvider"
+            android:name="core.services.Weather.WeatherProvider"
             android:exported="true"
-            android:icon="@mipmap/weather_service"
             />
     </application>
+
 </manifest>

@@ -35,19 +35,19 @@ public class SmartWatchExtension implements SmartwatchEvents {
 
             // Managing data from PhoneEvents Service
             if (key.equals(ServicesKeys.CallsID))
-                DataSet.update(SmartwatchConstants.CallsCount, Values.getByte(key), false);
+                DataSet.update(SmartwatchConstants.CallsCount, (byte) Values.getInt(key), false);
             if (key.equals(ServicesKeys.MessagesID))
-                DataSet.update(SmartwatchConstants.MessagesCount, Values.getByte(key), false);
+                DataSet.update(SmartwatchConstants.MessagesCount, (byte) Values.getInt(key), false);
 
             // Managing data from Weather Service
             if (key.equals(ServicesKeys.WeatherID))
-                DataSet.update(SmartwatchConstants.WeatherSkyNow, Values.getByte(key), false);
+                DataSet.update(SmartwatchConstants.WeatherSkyNow, (byte) Values.getInt(key), false);
             if (key.equals(ServicesKeys.TemperatureID))
-                DataSet.update(SmartwatchConstants.WeatherTemperatureNow, Values.getByte(key), true);
+                DataSet.update(SmartwatchConstants.WeatherTemperatureNow, (byte) Values.getInt(key), true);
             if (key.equals(ServicesKeys.TemperatureMaxID))
-                DataSet.update(SmartwatchConstants.WeatherTemperatureMax, Values.getByte(key), true);
+                DataSet.update(SmartwatchConstants.WeatherTemperatureMax, (byte) Values.getInt(key), true);
             if (key.equals(ServicesKeys.TemperatureMinID))
-                DataSet.update(SmartwatchConstants.WeatherTemperatureMin, Values.getByte(key), true);
+                DataSet.update(SmartwatchConstants.WeatherTemperatureMin, (byte) Values.getInt(key), true);
             if (key.equals(ServicesKeys.LocationNameID))
                 DataSet.update(SmartwatchConstants.WeatherLocationName, Values.getString(key));
         }

@@ -1,4 +1,4 @@
-package core.service.PhoneEvents;
+package core.services.PhoneEvents;
 
 public interface PhoneEventsUpdates {
     void CallsCount(int Count);

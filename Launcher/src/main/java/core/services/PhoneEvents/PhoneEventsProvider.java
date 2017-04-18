@@ -1,14 +1,11 @@
-package core.service.PhoneEvents;
+package core.services.PhoneEvents;
 
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
-import core.launcher.application.R;
 import core.launcher.application.ServicesKeys;
 import core.launcher.application.SmartWatchExtension;
 import core.launcher.application.WatchState;
@@ -18,14 +15,11 @@ public class PhoneEventsProvider extends Service implements PhoneEventsQueries, 
 
     private String LogTag = this.getClass().getSimpleName();
 
-    private NotificationManager InfoProvider;
-    private Notification.Builder InfoCreator;
-
     private SmartWatchExtension Watch = null;
-
     private PhoneEventsAccess Connector=null;
-
     private PhoneEventsCatcher PhoneEvents = null;
+    private boolean isRunning;
+
 
     private int WatchStatus = WatchState.Disconnected;
     private int MissedCallsCount = 0;
@@ -36,15 +30,6 @@ public class PhoneEventsProvider extends Service implements PhoneEventsQueries, 
     public PhoneEventsProvider(){
         EventSnapshot = new Bundle();
         Connector = new PhoneEventsAccess();
-    }
-
-    private void PushSystemNotification() {
-        int  Info = -1;
-        if (WatchStatus == WatchState.Connected) Info = R.string.Connected;
-        if (WatchStatus == WatchState.Disconnected) Info = R.string.Disconnected;
-
-        InfoCreator.setContentText(getText(Info));
-        InfoProvider.notify(R.string.ID,InfoCreator.build());
     }
 
     /**************************************************************
@@ -78,25 +63,20 @@ public class PhoneEventsProvider extends Service implements PhoneEventsQueries, 
     @Override
     public void onCreate(){
         super.onCreate();
-        InfoProvider = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        InfoCreator = new Notification.Builder(this);
-        InfoCreator.setSmallIcon(R.drawable.phone_events);
-        InfoCreator.setContentTitle(getText(R.string.ServicePhoneEventsName));
-
         Connector.RegisterProvider(this);
 
         Watch = new SmartWatchExtension(getBaseContext());
         WatchStatus = (Watch.isConnected()? WatchState.Connected: WatchState.Disconnected);
 
-        PushSystemNotification();
-
         PhoneEvents = new PhoneEventsCatcher(this);
         PhoneEvents.enableReceiver(getBaseContext());
+        isRunning = false;
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d(LogTag, "Starting service ...");
+        if (!isRunning) { Log.d(LogTag, "Starting service ..."); isRunning = true;}
+        else Log.d(LogTag, "Service is already running !");
         return START_STICKY;
     }
 
@@ -109,7 +89,6 @@ public class PhoneEventsProvider extends Service implements PhoneEventsQueries, 
     @Override
     public void onDestroy() {
         Log.d(LogTag, "Service is about to quit !");
-        InfoProvider.cancel(R.string.ID);
         super.onDestroy();
     }
 
@@ -131,12 +110,10 @@ public class PhoneEventsProvider extends Service implements PhoneEventsQueries, 
             MissedCallsCount = 0;
             MissedMessagesCount = 0;
             WatchStatus = WatchState.Disconnected;
-            PushSystemNotification();
             return;
         }
 
         WatchStatus = WatchState.Connected;
-        PushSystemNotification();
     }
 
 

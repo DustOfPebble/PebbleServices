@@ -1,4 +1,4 @@
-package core.service.Weather;
+package core.services.Weather;
 
 import android.os.Binder;
 import android.util.Log;

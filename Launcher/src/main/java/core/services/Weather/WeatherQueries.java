@@ -1,4 +1,4 @@
-package core.service.Weather;
+package core.services.Weather;
 
 public interface WeatherQueries {
     void Query();
