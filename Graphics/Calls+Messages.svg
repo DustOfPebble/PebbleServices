@@ -27,9 +27,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.8803192"
-     inkscape:cx="408.29644"
-     inkscape:cy="408.20636"
+     inkscape:zoom="0.98721386"
+     inkscape:cx="680.4347"
+     inkscape:cy="522.64527"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -209,5 +209,50 @@
        inkscape:export-filename="/home/xavier/Android.Projects/MissedEventsSpy/Graphics/Calls.png"
        inkscape:export-xdpi="153"
        inkscape:export-ydpi="153" />
+    <g
+       inkscape:export-ydpi="153"
+       inkscape:export-xdpi="153"
+       inkscape:export-filename="/home/xavier/Android.Projects/PebbleService/Graphics/phone_service.png"
+       transform="matrix(0.50387756,-0.13056738,0.1295528,0.50782363,568.37282,-165.63006)"
+       id="g3086">
+      <rect
+         style="fill:#ffe2b7;fill-opacity:1;stroke:#8d8d8d;stroke-width:9.63199997;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         id="rect3089"
+         width="173.57443"
+         height="134.08395"
+         x="171.81183"
+         y="457.2941"
+         ry="4.2785864" />
+      <path
+         style="fill:#ffe2b7;fill-opacity:1;stroke:#8d8d8d;stroke-width:9.63199997;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         d="m 171.58981,588.76494 85.98736,-77.7071 85.98738,78.98099"
+         id="path3091"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="ccc" />
+      <path
+         style="fill:#ffe2b7;fill-opacity:1;stroke:#8d8d8d;stroke-width:9.63199997;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         d="m 170.95287,468.38263 85.35042,70.06378 87.8982,-68.15295"
+         id="path3093"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="ccc" />
+    </g>
+    <path
+       inkscape:export-ydpi="153"
+       inkscape:export-xdpi="153"
+       inkscape:export-filename="/home/xavier/Android.Projects/PebbleService/Graphics/phone_service.png"
+       sodipodi:nodetypes="czccccczccc"
+       inkscape:connector-curvature="0"
+       id="path3095"
+       d="m 840.17012,77.28586 c -2.43859,17.0847 4.77928,30.06871 20.00941,36.86506 15.2302,6.79642 28.31225,-2.20211 28.31225,-2.20211 l 3.62286,9.26289 8.35479,-22.16657 -20.02614,-6.92937 4.09436,9.1135 c 0,0 -8.67412,4.62221 -16.9151,1.1943 -8.241,-3.42791 -12.62528,-14.59013 -6.98597,-28.49808 l -11.51659,9.37411 z"
+       style="fill:#e06752;fill-opacity:1;stroke:#8b0d0d;stroke-width:3.24496412;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    <path
+       inkscape:export-ydpi="153"
+       inkscape:export-xdpi="153"
+       inkscape:export-filename="/home/xavier/Android.Projects/PebbleService/Graphics/phone_service.png"
+       sodipodi:nodetypes="ccccccccc"
+       inkscape:connector-curvature="0"
+       id="path3084"
+       d="m 816.92535,152.9275 c -10.58678,-4.13855 -18.24529,-4.45843 -35.44482,-17.2206 2.85549,-11.00998 9.6944,-21.50549 20.77781,-31.45285 36.78208,6.87052 71.3655,20.09795 100.57478,48.86358 -0.52252,13.77875 -6.71798,24.80137 -13.0163,35.774 -12.58024,-3.43796 -23.56657,-9.2693 -33.56589,-16.58289 0.8881,-6.1299 3.14503,-12.74187 5.77032,-19.48366 -11.33673,-3.339 -21.7105,-8.22282 -33.00797,-16.03669 -4.62865,7.54312 -8.49419,12.33179 -12.08793,16.13911 z"
+       style="fill:#f56a4f;fill-opacity:1;stroke:#8f1e1e;stroke-width:6.66697311;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
   </g>
 </svg>
