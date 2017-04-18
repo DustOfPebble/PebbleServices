@@ -4,7 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Launcher/Launcher.iml" filepath="$PROJECT_DIR$/Launcher/Launcher.iml" />
       <module fileurl="file://$PROJECT_DIR$/PebbleLib/PebbleLib.iml" filepath="$PROJECT_DIR$/PebbleLib/PebbleLib.iml" />
-      <module fileurl="file://$PROJECT_DIR$/PebbleService.iml" filepath="$PROJECT_DIR$/PebbleService.iml" />
+      <module fileurl="file://$PROJECT_DIR$/PebbleServices.iml" filepath="$PROJECT_DIR$/PebbleServices.iml" />
       <module fileurl="file://$PROJECT_DIR$/Smartwatch/Smartwatch.iml" filepath="$PROJECT_DIR$/Smartwatch/Smartwatch.iml" />
     </modules>
   </component>
