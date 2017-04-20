@@ -28,9 +28,7 @@ public class WeatherProvider extends Service implements WeatherQueries, Smartwat
     }
 
     /**************************************************************
-     *  Callbacks implementation from Weather Miner
-     *  - Missed Calls
-     *  - Missed Messages
+     *  Callbacks implementation from WeatherMiner
      **************************************************************/
     public void Update(Bundle WeatherInfos) {
         EventSnapshot = WeatherInfos;
@@ -74,10 +72,7 @@ public class WeatherProvider extends Service implements WeatherQueries, Smartwat
      *  Callbacks implementation for incoming commands
      **************************************************************/
     @Override
-    public void Query() {
-        Connector.Weather(0, "Guyancourt");
-        Connector.Temperatures(18,-2,23);
-    }
+    public void Query() { Connector.Weather(0, 0); }
 
     /**************************************************************
      *  Callbacks implementation Smartwatch connection state

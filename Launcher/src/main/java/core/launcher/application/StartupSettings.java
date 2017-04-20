@@ -42,6 +42,8 @@ public class StartupSettings extends Activity implements PhoneEventsUpdates, Wea
         Permissions.Append(Manifest.permission.READ_PHONE_STATE);
         Permissions.Append(Manifest.permission.INTERNET);
         Permissions.Append(Manifest.permission.ACCESS_NETWORK_STATE);
+        Permissions.Append(Manifest.permission.ACCESS_FINE_LOCATION);
+        Permissions.Append(Manifest.permission.ACCESS_COARSE_LOCATION);
 
         String Requested = Permissions.Selected();
         while (Requested != null) {
@@ -146,17 +148,15 @@ public class StartupSettings extends Activity implements PhoneEventsUpdates, Wea
      * Callback implementation to manage update from PhoneEvents Service
      * **********************************************************************/
     @Override
-    public void CallsCount(int Count) { CallsCounter.setText(String.valueOf(Count)); }
-
-    @Override
-    public void MessagesCount(int Count) { MessagesCounter.setText(String.valueOf(Count)); }
+    public void PhoneEvents(int Calls, int Messages) {
+        CallsCounter.setText(String.valueOf(Calls));
+        MessagesCounter.setText(String.valueOf(Calls));
+    }
 
     /************************************************************************
      * Callback implementation to manage update from Weather Service
      * **********************************************************************/
     @Override
-    public void Weather(int IconID, String LocationName) {}
-    @Override
-    public void Temperatures(double Now, double Max, double Min) {}
+    public void Weather(int WeatherID, int Temperature) {}
 }
 

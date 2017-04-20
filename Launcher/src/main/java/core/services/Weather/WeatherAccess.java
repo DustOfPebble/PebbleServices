@@ -15,15 +15,10 @@ public class WeatherAccess extends Binder {
 
     public void Query() { Queries.Query(); }
 
-    public void Weather(int ID, String Name) {
-        try { Events.Weather(ID, Name);}
+    public void Weather(int ID, int Temp) {
+        try { Events.Weather(ID, Temp);}
         catch (Exception Failed) { Log.d(LogTag, "Failed on Weather event");}
     }
 
-    public void Temperatures(double TempNow, double TemMax, double TempMin) {
-        try {
-            Events.Temperatures(TempNow, TemMax, TempMin); }
-        catch (Exception Failed) { Log.d(LogTag, "Failed on Temperatures event");}
-    }
 
 }

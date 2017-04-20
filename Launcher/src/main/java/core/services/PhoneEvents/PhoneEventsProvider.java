@@ -44,7 +44,7 @@ public class PhoneEventsProvider extends Service implements PhoneEventsQueries, 
         EventSnapshot.putInt(ServicesKeys.MessagesID, MissedMessagesCount);
         Watch.push(EventSnapshot);
 
-        Connector.CallsCount(MissedCallsCount);
+        Connector.PhoneEvents(MissedCallsCount,MissedMessagesCount);
     }
 
     public void Message() {
@@ -54,7 +54,7 @@ public class PhoneEventsProvider extends Service implements PhoneEventsQueries, 
         EventSnapshot.putInt(ServicesKeys.MessagesID, MissedMessagesCount);
         Watch.push(EventSnapshot);
 
-        Connector.MessagesCount(MissedMessagesCount);
+        Connector.PhoneEvents(MissedCallsCount,MissedMessagesCount);
     }
 
     /**************************************************************
@@ -97,8 +97,7 @@ public class PhoneEventsProvider extends Service implements PhoneEventsQueries, 
      **************************************************************/
     @Override
     public void Query() {
-        Connector.CallsCount(MissedCallsCount);
-        Connector.MessagesCount(MissedMessagesCount);
+        Connector.PhoneEvents(MissedCallsCount,MissedMessagesCount);
     }
 
     /**************************************************************

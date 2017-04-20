@@ -15,15 +15,9 @@ public class PhoneEventsAccess extends Binder {
 
     public void Query() { Queries.Query(); }
 
-    public void CallsCount(int Count) {
-        try { Events.CallsCount(Count);}
-        catch (Exception Failed) { Log.d(LogTag, "Failed on MissedCalls event");}
-    }
-
-    public void MessagesCount(int Count) {
-        try {
-            Events.MessagesCount(Count); }
-        catch (Exception Failed) { Log.d(LogTag, "Failed on MessagesCount event");}
+    public void PhoneEvents(int Calls, int Messages) {
+        try { Events.PhoneEvents(Calls, Messages);}
+        catch (Exception Failed) { Log.d(LogTag, "Failed on Updates event");}
     }
 
 }
