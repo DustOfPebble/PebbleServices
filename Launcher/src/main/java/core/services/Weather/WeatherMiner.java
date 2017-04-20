@@ -1,15 +1,19 @@
 package core.services.Weather;
 
 
+import android.os.Bundle;
 import android.util.Log;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.security.Permission;
+
+import core.launcher.application.ServicesKeys;
 
 public class WeatherMiner  {
 
     private String LogTag = this.getClass().getSimpleName();
-
-    static private  String Sample = "http://samples.openweathermap.org/data/2.5/weather?lat=35&lon=139&appid=b1b15e88fa797225412429c1c50c122a1";
 
     private WeatherProvider Listener;
     private WeatherGPS GPS = null;
@@ -17,21 +21,49 @@ public class WeatherMiner  {
 
     public WeatherMiner(WeatherProvider Parent) {
         Listener = Parent;
-        Downloader = new WeatherDownloader(Listener, this);
         GPS = new WeatherGPS(Listener, this);
         GPS.refresh();
     }
 
+    private int ID(String Code) {
+        if  (WeatherCode.Sunny.equals(Code)) return WeatherCode.SunnyID;
+        if  (WeatherCode.SunnyCloudy.equals(Code)) return WeatherCode.SunnyCloudyID;
+        if  (WeatherCode.Cloudy.equals(Code)) return WeatherCode.CloudyID;
+        if  (WeatherCode.HeavyCloudy.equals(Code)) return WeatherCode.HeavyCloudyID;
+        if  (WeatherCode.Rainy.equals(Code)) return WeatherCode.RainyID;
+        if  (WeatherCode.SunnyRainy.equals(Code)) return WeatherCode.SunnyRainyID;
+        if  (WeatherCode.Stormy.equals(Code)) return WeatherCode.StormyID;
+        if  (WeatherCode.Snowy .equals(Code)) return WeatherCode.SnowyID;
+        return 0;
+    }
     /**************************************************************
      *  Callbacks implementation from Workers
      **************************************************************/
     public void UpdateGPS(double Longitude, double Latitude) {
+        Downloader = new WeatherDownloader(this);
         String Query = Downloader.setLocation(Longitude, Latitude);
         Downloader.download(Query);
     }
 
     public void process(String Downloaded){
-        if (Downloaded != null) Log.d(LogTag, "JSON => "+Downloaded);
- //       Downloader.interrupt();
+        int WeatherID = 0;
+        int Temperature = 0;
+        try {
+            JSONObject Block = new JSONObject(Downloaded);
+            JSONArray Weathers = Block.getJSONArray("weather");
+            JSONObject Weather = Weathers.getJSONObject(0);
+            String WeatherCode = Weather.getString("icon");
+            WeatherID = ID(WeatherCode.substring(0,1));
+
+            JSONObject Conditions = Block.getJSONObject("main");
+            double Kelvin = Conditions.getDouble("temp");
+            Temperature = (int)(Kelvin - 273.15);
+
+            Bundle WeatherInfo = new Bundle();
+            WeatherInfo.putInt(ServicesKeys.WeatherID, WeatherID);
+            WeatherInfo.putInt(ServicesKeys.TemperatureID, Temperature);
+            Listener.Update(WeatherInfo);
+
+        } catch (Exception Error) { Error.printStackTrace();}
     }
 }

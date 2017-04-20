@@ -3,6 +3,7 @@ package core.services.Weather;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Handler;
 import android.util.Log;
 
 import java.io.IOException;
@@ -11,7 +12,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class WeatherDownloader implements Runnable {
+public class WeatherDownloader extends Thread  {
     private String LogTag = this.getClass().getSimpleName();
 
     static private  String Server = "api.openweathermap.org";
@@ -19,14 +20,12 @@ public class WeatherDownloader implements Runnable {
     static private  String KeyAPI ="3d28c03d7fb2f5f4b4b7bc98367cc2cd";
 
     private WeatherMiner Listener = null;
-    private Context WeatherService = null;
     private String WeatherURL = null;
 
     private int maxLength = 10000; // in Bytes
 
-    public WeatherDownloader(Context Service, WeatherMiner Parent) {
+    public WeatherDownloader(WeatherMiner Parent) {
         Listener = Parent;
-        WeatherService = Service;
     }
 
     public String setLocation(double Longitude, double Latitude){
@@ -40,12 +39,13 @@ public class WeatherDownloader implements Runnable {
     }
 
     public void download(String Query) {
- //       if (this.getState() == State.NEW) {
-            WeatherURL = Query;
- //           this.start();
-            this.run();
-//        }
+        WeatherURL = Query;
+        this.start();
     }
+
+    /**********************************************************************************************
+     * Thread Main process
+     **********************************************************************************************/
     @Override
     public void run(){
         String result = null;
@@ -63,7 +63,6 @@ public class WeatherDownloader implements Runnable {
             if (stream != null) {
                 InputStreamReader reader = new InputStreamReader(stream, "UTF-8");
                 char[] buffer = new char[maxLength];
-                // Populate temporary buffer with Stream data.
                 int numChars = 0;
                 int readSize = 0;
                 while (numChars < maxLength && readSize != -1) {
@@ -79,21 +78,9 @@ public class WeatherDownloader implements Runnable {
             stream.close();
             connection.disconnect();
             Listener.process(result);
-            Log.d(LogTag, "Passed !");
         } catch (Exception Error) {Error.printStackTrace();}
     }
 }
-
-/*
-    public boolean isConnected(){
-        ConnectivityManager connMgr = (ConnectivityManager) WeatherService.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected())
-            return true;
-        else
-            return false;
-    }
-*/
 
 
 
