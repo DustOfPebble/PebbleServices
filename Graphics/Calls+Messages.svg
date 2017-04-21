@@ -27,9 +27,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.98721386"
+     inkscape:zoom="3.131319"
      inkscape:cx="680.4347"
-     inkscape:cy="522.64527"
+     inkscape:cy="663.16114"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -100,7 +100,7 @@
        sodipodi:cy="606.02863"
        sodipodi:rx="22.068966"
        sodipodi:ry="23.870514"
-       d="m 329.59204,603.85981 a 22.068966,23.870514 0 1 1 -0.0202,-0.22734"
+       d="m 329.59204,603.85981 c 1.1074,13.1288 -7.83462,24.7428 -19.97256,25.9406 -12.13794,1.1978 -22.87542,-8.47418 -23.98282,-21.60297 -1.1074,-13.1288 7.83462,-24.7428 19.97256,-25.9406 12.05591,-1.1897 22.74741,8.34755 23.96263,21.37563"
        sodipodi:start="6.1922025"
        sodipodi:end="12.46582"
        sodipodi:open="true"
@@ -212,8 +212,8 @@
     <g
        inkscape:export-ydpi="153"
        inkscape:export-xdpi="153"
-       inkscape:export-filename="/home/xavier/Android.Projects/PebbleService/Graphics/phone_service.png"
-       transform="matrix(0.50387756,-0.13056738,0.1295528,0.50782363,568.37282,-165.63006)"
+       inkscape:export-filename="/home/xavier/Android.Projects/PebbleServices/Graphics/missed_messages.png"
+       transform="matrix(0.74326513,-0.19565667,0.19110214,0.76097937,431.40141,-325.28825)"
        id="g3086">
       <rect
          style="fill:#ffe2b7;fill-opacity:1;stroke:#8d8d8d;stroke-width:9.63199997;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
