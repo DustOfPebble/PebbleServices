@@ -2,6 +2,7 @@ package core.launcher.application;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 
 import lib.smartwatch.SmartwatchBundle;
 import lib.smartwatch.SmartwatchEvents;
@@ -13,6 +14,8 @@ import lib.smartwatch.SmartwatchManager;
  *      - Values types
  ******************************************************************************/
 public class SmartWatchExtension implements SmartwatchEvents {
+
+    private String LogTag = this.getClass().getSimpleName();
 
     private SmartwatchManager WatchConnector = null;
     private SmartwatchBundle DataSet = null;
@@ -28,7 +31,6 @@ public class SmartWatchExtension implements SmartwatchEvents {
         return isWatchConnected;
     }
 
-    // On receive we do nothing because we are disconnected ...
     public void push(Bundle Values) {
         if (!isWatchConnected) return;
         for (String key : Values.keySet()) {
@@ -51,6 +53,7 @@ public class SmartWatchExtension implements SmartwatchEvents {
             if (key.equals(ServicesKeys.LocationNameID))
                 DataSet.update(SmartwatchConstants.WeatherLocationName, Values.getString(key));
         }
+        WatchConnector.send(DataSet);
     }
 
     /**************************************************************

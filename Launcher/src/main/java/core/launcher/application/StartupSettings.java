@@ -28,6 +28,7 @@ public class StartupSettings extends Activity implements PhoneEventsUpdates, Wea
     private WeatherAccess WeatherService = null;
 
     private PermissionHelper Permissions = new PermissionHelper();
+    private boolean PermissionsChecked = false;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,17 +60,20 @@ public class StartupSettings extends Activity implements PhoneEventsUpdates, Wea
     @Override
     protected void onResume() {
         super.onResume();
-        StartServices();
+        if (PermissionsChecked) StartServices();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Log.d(LogTag, "Closing connection with Services ...");
+        if (PhoneEventsService == null) return;
+        if (WeatherService == null) return;
         unbindService(this);
+        Log.d(LogTag, "Closing connection with Services ...");
     }
 
     private void StartServices(){
+        PermissionsChecked = true;
         Intent ServiceStarter;
 
         // Start Service

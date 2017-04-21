@@ -12,7 +12,7 @@ public class WeatherGPS implements Runnable {
     private Context WeatherService = null;
     private LocationManager GPS = null;
     private Handler TrigGPS = new Handler();
-    private int RefreshDelay = 30000; // in ms
+    private int RefreshDelay = 5*60*1000; // in ms
 
     public WeatherGPS(Context Service, WeatherMiner Parent) {
         Listener = Parent;

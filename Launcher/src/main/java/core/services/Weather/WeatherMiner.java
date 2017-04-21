@@ -2,12 +2,9 @@ package core.services.Weather;
 
 
 import android.os.Bundle;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.security.Permission;
 
 import core.launcher.application.ServicesKeys;
 
@@ -53,7 +50,7 @@ public class WeatherMiner  {
             JSONArray Weathers = Block.getJSONArray("weather");
             JSONObject Weather = Weathers.getJSONObject(0);
             String WeatherCode = Weather.getString("icon");
-            WeatherID = ID(WeatherCode.substring(0,1));
+            WeatherID = ID(WeatherCode.substring(0,2));
 
             JSONObject Conditions = Block.getJSONObject("main");
             double Kelvin = Conditions.getDouble("temp");
