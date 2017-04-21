@@ -48,7 +48,11 @@ public class WeatherProvider extends Service implements WeatherQueries, Smartwat
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (!isRunning) { Log.d(LogTag, "Starting service ..."); isRunning = true;}
+        if (!isRunning) {
+            Log.d(LogTag, "Starting service ...");
+            isRunning = true;
+            Miner.start();
+        }
         else Log.d(LogTag, "Service is already running !");
         return START_STICKY;
     }
@@ -62,6 +66,7 @@ public class WeatherProvider extends Service implements WeatherQueries, Smartwat
     @Override
     public void onDestroy() {
         Log.d(LogTag, "Service is about to quit !");
+        Miner.stop();
         super.onDestroy();
     }
 

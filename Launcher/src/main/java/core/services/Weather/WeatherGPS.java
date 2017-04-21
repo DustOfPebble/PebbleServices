@@ -20,17 +20,20 @@ public class WeatherGPS implements Runnable {
         GPS = (LocationManager) Service.getSystemService(Context.LOCATION_SERVICE);
     }
 
-    public void refresh() {
-        refreshLocation();
+    public void start() {
+        TrigGPS.postDelayed(this, 0);
     }
 
-    private void processLocation(Location Here) {
-        Listener.UpdateGPS(Here.getLongitude(),Here.getLatitude());
+    public void stop() {
+        TrigGPS.removeCallbacks(this);
     }
 
+    /****************************************************************
+     * Callback implementation for Runnable for querying Position
+     ****************************************************************/
     @SuppressWarnings({"MissingPermission"})
-    private void refreshLocation(){
-
+    @Override
+    public void run() {
         TrigGPS.postDelayed(this, RefreshDelay);
 
         if (GPS == null)  GPS = (LocationManager) WeatherService.getSystemService(Context.LOCATION_SERVICE);
@@ -40,20 +43,13 @@ public class WeatherGPS implements Runnable {
 
         Updated = GPS.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         if (Updated != null) {
-            processLocation(Updated);
+            Listener.UpdateGPS(Updated.getLongitude(),Updated.getLatitude());
             return;
         }
         Updated = GPS.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         if (Updated != null) {
-            processLocation(Updated);
+            Listener.UpdateGPS(Updated.getLongitude(),Updated.getLatitude());
             return;
         }
     }
-
-    /****************************************************************
-     * Callback implementation for Runnable for querying Position
-     ****************************************************************/
-    @Override
-    public void run() { refreshLocation(); }
-
 }

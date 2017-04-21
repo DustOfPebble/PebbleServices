@@ -31,7 +31,7 @@ public class WeatherDownloader extends Thread  {
         return  Query;
     }
 
-    public void download(String Query) {
+    public void start(String Query) {
         WeatherURL = Query;
         this.start();
     }

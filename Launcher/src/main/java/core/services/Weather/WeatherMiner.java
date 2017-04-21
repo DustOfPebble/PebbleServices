@@ -19,7 +19,14 @@ public class WeatherMiner  {
     public WeatherMiner(WeatherProvider Parent) {
         Listener = Parent;
         GPS = new WeatherGPS(Listener, this);
-        GPS.refresh();
+    }
+
+    public void start() {
+        GPS.start();
+    }
+
+    public void stop() {
+        GPS.stop();
     }
 
     private int ID(String Code) {
@@ -39,9 +46,10 @@ public class WeatherMiner  {
     public void UpdateGPS(double Longitude, double Latitude) {
         Downloader = new WeatherDownloader(this);
         String Query = Downloader.setLocation(Longitude, Latitude);
-        Downloader.download(Query);
+        Downloader.start(Query);
     }
 
+    // Called by Downloader when finished and successful
     public void process(String Downloaded){
         int WeatherID = 0;
         int Temperature = 0;
