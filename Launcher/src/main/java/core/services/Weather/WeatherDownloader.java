@@ -22,7 +22,7 @@ public class WeatherDownloader extends Thread  {
     }
 
     public String setLocation(double Longitude, double Latitude){
-        // Query template : api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={key}
+        // query template : api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={key}
         String Query = "http://";
         Query +=  Server;
         Query +=  Command;

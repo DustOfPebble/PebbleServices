@@ -14,7 +14,7 @@ public class PhoneEventsAccess extends Binder {
     public void RegisterProvider(PhoneEventsQueries Provider) { this.Provider = Provider; }
     public void RegisterListener(PhoneEventsUpdates Listener) { this.Listener = Listener; }
 
-    public void Query() { Provider.Query(); }
+    public void query() { Provider.query(); }
 
     public void push(Bundle UpdateSnapshot) {
         try { Listener.push(UpdateSnapshot);}

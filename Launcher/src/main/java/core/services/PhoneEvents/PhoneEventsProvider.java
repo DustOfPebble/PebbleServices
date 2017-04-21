@@ -75,7 +75,7 @@ public class PhoneEventsProvider extends Service implements PhoneEventsQueries, 
      *  Callbacks implementation for incoming commands
      **************************************************************/
     @Override
-    public void Query() {
+    public void query() {
         Connector.push(UpdateSnapshot);
     }
 

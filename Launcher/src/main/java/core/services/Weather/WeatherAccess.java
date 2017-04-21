@@ -14,7 +14,7 @@ public class WeatherAccess extends Binder {
     public void RegisterProvider(WeatherQueries Provider) { this.Provider = Provider; }
     public void RegisterListener(WeatherUpdates Listener) { this.Listener = Listener; }
 
-    public void Query() { Provider.query(); }
+    public void query() { Provider.query(); }
 
     public void push(Bundle UpdateSnapshot) {
         try { Listener.push(UpdateSnapshot);}

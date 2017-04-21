@@ -123,14 +123,14 @@ public class StartupSettings extends Activity implements PhoneEventsUpdates, Wea
         if (PhoneEventsProvider.class.getName().equals(name.getClassName())) {
             PhoneEventsService = (PhoneEventsAccess) service;
             PhoneEventsService.RegisterListener(this);
-            PhoneEventsService.Query();
+            PhoneEventsService.query();
         }
 
         // Connection from push Service
         if (WeatherProvider.class.getName().equals(name.getClassName())) {
             WeatherService = (WeatherAccess) service;
             WeatherService.RegisterListener(this);
-            WeatherService.Query();
+            WeatherService.query();
         }
     }
 
