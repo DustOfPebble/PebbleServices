@@ -4,8 +4,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+
+import core.launcher.application.ServicesKeys;
 
 public class PhoneEventsCatcher extends BroadcastReceiver {
 
@@ -16,6 +19,9 @@ public class PhoneEventsCatcher extends BroadcastReceiver {
 
     private PhoneEventsProvider EventManager;
     private IntentFilter EventFilters = new IntentFilter();
+
+    private int MissedCallsCount = 0;
+    private int MissedMessagesCount = 0;
 
     private boolean hasRing = false;
     private boolean hasPickUp = false;
@@ -31,6 +37,11 @@ public class PhoneEventsCatcher extends BroadcastReceiver {
         ServiceContext.registerReceiver(this, EventFilters);
     }
 
+    public void resetCount() {
+        MissedCallsCount = 0;
+        MissedMessagesCount = 0;
+    }
+
     /********************************************************************************************
      * Broadcast Receiver implementation for SMS and Calls
      *********************************************************************************************/
@@ -40,8 +51,7 @@ public class PhoneEventsCatcher extends BroadcastReceiver {
         String Action = PhoneEvent.getAction();
         if (SMS.equals(Action)) {
             Log.i(LogTag, "SMS received.");
-            EventManager.Message();
-            return;
+            MissedMessagesCount++;
         }
 
         if (CALL.equals(Action)) {
@@ -60,12 +70,17 @@ public class PhoneEventsCatcher extends BroadcastReceiver {
 
             if (PhoneState.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
                 if (hasRing && !hasPickUp) {
-                    EventManager.Call();
+                    MissedCallsCount++;
                     Log.i(LogTag, "Missed Phone call !");
                 }
                 hasRing = false;
                 hasPickUp = false;
             }
+
+            Bundle PhoneInfos = new Bundle();
+            PhoneInfos.putInt(ServicesKeys.MessagesID, MissedMessagesCount);
+            PhoneInfos.putInt(ServicesKeys.CallsID, MissedCallsCount);
+            EventManager.Update(PhoneInfos);
         }
     }
 }

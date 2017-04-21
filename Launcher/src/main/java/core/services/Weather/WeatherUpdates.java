@@ -1,5 +1,7 @@
 package core.services.Weather;
 
+import android.os.Bundle;
+
 public interface WeatherUpdates {
-    void Weather(int WeatherID, int Temprature);
+    void push(Bundle UpdateSnapshot);
 }

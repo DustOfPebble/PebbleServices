@@ -7,7 +7,6 @@ import android.os.IBinder;
 import android.util.Log;
 
 import core.launcher.application.SmartWatchExtension;
-import core.launcher.application.WatchState;
 import lib.smartwatch.SmartwatchEvents;
 
 public class WeatherProvider extends Service implements WeatherQueries, SmartwatchEvents {
@@ -15,24 +14,25 @@ public class WeatherProvider extends Service implements WeatherQueries, Smartwat
     private String LogTag = this.getClass().getSimpleName();
     private boolean isRunning;
 
-    private int WatchStatus = WatchState.Disconnected;
     private SmartWatchExtension Watch = null;
-    private Bundle EventSnapshot = null;
-
     private WeatherAccess Connector=null;
+
     private WeatherMiner Miner = null;
+    private Bundle UpdateSnapshot = null;
 
     public WeatherProvider(){
-        EventSnapshot = new Bundle();
+        UpdateSnapshot = new Bundle();
         Connector = new WeatherAccess();
+        isRunning = false;
     }
 
     /**************************************************************
      *  Callbacks implementation from WeatherMiner
      **************************************************************/
     public void Update(Bundle WeatherInfos) {
-        EventSnapshot = WeatherInfos;
-        Watch.push(EventSnapshot);
+        UpdateSnapshot = WeatherInfos;
+        Watch.push(UpdateSnapshot);
+        Connector.push(UpdateSnapshot);
     }
     /**************************************************************
      *  Callbacks implementation for Service management
@@ -41,10 +41,7 @@ public class WeatherProvider extends Service implements WeatherQueries, Smartwat
     public void onCreate(){
         super.onCreate();
         Connector.RegisterProvider(this);
-
         Watch = new SmartWatchExtension(getBaseContext());
-        WatchStatus = (Watch.isConnected()? WatchState.Connected:WatchState.Disconnected);
-
         Miner = new WeatherMiner(this);
         isRunning = false;
     }
@@ -72,21 +69,18 @@ public class WeatherProvider extends Service implements WeatherQueries, Smartwat
      *  Callbacks implementation for incoming commands
      **************************************************************/
     @Override
-    public void Query() { Connector.Weather(0, 0); }
+    public void query() {
+        if (UpdateSnapshot.size() == 0) return;
+        Connector.push(UpdateSnapshot);
+    }
 
     /**************************************************************
      *  Callbacks implementation Smartwatch connection state
      **************************************************************/
     @Override
     public void ConnectedStateChanged(Boolean isConnected) {
-        if (isConnected) {
-            WatchStatus = WatchState.Disconnected;
-            return;
-        }
-
-        WatchStatus = WatchState.Connected;
-        return;
+        if (!isConnected) return;
+        if (UpdateSnapshot.size() == 0) return;
+        Watch.push(UpdateSnapshot);
     }
-
-
 }

@@ -24,6 +24,7 @@ public class StartupSettings extends Activity implements PhoneEventsUpdates, Wea
 
     private TextView CallsCounter = null;
     private TextView MessagesCounter = null;
+
     private PhoneEventsAccess PhoneEventsService = null;
     private WeatherAccess WeatherService = null;
 
@@ -118,14 +119,14 @@ public class StartupSettings extends Activity implements PhoneEventsUpdates, Wea
     public void onServiceConnected(ComponentName name, IBinder service) {
         Log.d(LogTag, "Connected to " + name.getClassName() + " Service");
 
-        // Connection from PhoneEvents Service
+        // Connection from push Service
         if (PhoneEventsProvider.class.getName().equals(name.getClassName())) {
             PhoneEventsService = (PhoneEventsAccess) service;
             PhoneEventsService.RegisterListener(this);
             PhoneEventsService.Query();
         }
 
-        // Connection from PhoneEvents Service
+        // Connection from push Service
         if (WeatherProvider.class.getName().equals(name.getClassName())) {
             WeatherService = (WeatherAccess) service;
             WeatherService.RegisterListener(this);
@@ -137,30 +138,34 @@ public class StartupSettings extends Activity implements PhoneEventsUpdates, Wea
     public void onServiceDisconnected(ComponentName name) {
         Log.d(LogTag, "Disconnected from " + name.getClassName()  + " Service");
 
-        // Disconnection from PhoneEvents Service
+        // Disconnection from push Service
         if (PhoneEventsProvider.class.getName().equals(name.getClassName())) {
             PhoneEventsService = null;
         }
 
-        // Disconnection from PhoneEvents Service
+        // Disconnection from push Service
         if (WeatherProvider.class.getName().equals(name.getClassName())) {
             WeatherService = null;
         }
     }
 
     /************************************************************************
-     * Callback implementation to manage update from PhoneEvents Service
+     * Callback implementation to manage update from push Services
      * **********************************************************************/
     @Override
-    public void PhoneEvents(int Calls, int Messages) {
-        CallsCounter.setText(String.valueOf(Calls));
-        MessagesCounter.setText(String.valueOf(Calls));
+    public void push(Bundle UpdateSnapshot) {
+        for (String key : UpdateSnapshot.keySet()) {
+
+            // Managing data from push Service
+            if (key.equals(ServicesKeys.CallsID)) CallsCounter.setText(String.valueOf(UpdateSnapshot.getInt(key)));
+            if (key.equals(ServicesKeys.MessagesID)) MessagesCounter.setText(String.valueOf(UpdateSnapshot.getInt(key)));
+
+
+            // Managing data from Weather Service
+//            if (key.equals(ServicesKeys.WeatherID))
+//            if (key.equals(ServicesKeys.TemperatureID))
+        }
     }
 
-    /************************************************************************
-     * Callback implementation to manage update from Weather Service
-     * **********************************************************************/
-    @Override
-    public void Weather(int WeatherID, int Temperature) {}
 }
 

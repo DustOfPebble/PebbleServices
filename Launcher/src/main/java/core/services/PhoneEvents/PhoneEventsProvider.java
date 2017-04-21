@@ -20,15 +20,10 @@ public class PhoneEventsProvider extends Service implements PhoneEventsQueries, 
     private PhoneEventsCatcher PhoneEvents = null;
     private boolean isRunning;
 
-
-    private int WatchStatus = WatchState.Disconnected;
-    private int MissedCallsCount = 0;
-    private int MissedMessagesCount =0;
-
-    private Bundle EventSnapshot = null;
+    private Bundle UpdateSnapshot = null;
 
     public PhoneEventsProvider(){
-        EventSnapshot = new Bundle();
+        UpdateSnapshot = new Bundle();
         Connector = new PhoneEventsAccess();
     }
 
@@ -37,24 +32,9 @@ public class PhoneEventsProvider extends Service implements PhoneEventsQueries, 
      *  - Missed Calls
      *  - Missed Messages
      **************************************************************/
-    public void Call() {
-        EventSnapshot.clear();
-        MissedCallsCount++;
-        EventSnapshot.putInt(ServicesKeys.CallsID, MissedCallsCount);
-        EventSnapshot.putInt(ServicesKeys.MessagesID, MissedMessagesCount);
-        Watch.push(EventSnapshot);
-
-        Connector.PhoneEvents(MissedCallsCount,MissedMessagesCount);
-    }
-
-    public void Message() {
-        EventSnapshot.clear();
-        MissedMessagesCount++;
-        EventSnapshot.putInt(ServicesKeys.CallsID, MissedCallsCount);
-        EventSnapshot.putInt(ServicesKeys.MessagesID, MissedMessagesCount);
-        Watch.push(EventSnapshot);
-
-        Connector.PhoneEvents(MissedCallsCount,MissedMessagesCount);
+    public void Update(Bundle PhoneInfos) {
+        UpdateSnapshot = PhoneInfos;
+        Connector.push(UpdateSnapshot);
     }
 
     /**************************************************************
@@ -66,7 +46,6 @@ public class PhoneEventsProvider extends Service implements PhoneEventsQueries, 
         Connector.RegisterProvider(this);
 
         Watch = new SmartWatchExtension(getBaseContext());
-        WatchStatus = (Watch.isConnected()? WatchState.Connected: WatchState.Disconnected);
 
         PhoneEvents = new PhoneEventsCatcher(this);
         PhoneEvents.enableReceiver(getBaseContext());
@@ -97,7 +76,7 @@ public class PhoneEventsProvider extends Service implements PhoneEventsQueries, 
      **************************************************************/
     @Override
     public void Query() {
-        Connector.PhoneEvents(MissedCallsCount,MissedMessagesCount);
+        Connector.push(UpdateSnapshot);
     }
 
     /**************************************************************
@@ -105,14 +84,14 @@ public class PhoneEventsProvider extends Service implements PhoneEventsQueries, 
      **************************************************************/
     @Override
     public void ConnectedStateChanged(Boolean isConnected) {
-        if (isConnected) {
-            MissedCallsCount = 0;
-            MissedMessagesCount = 0;
-            WatchStatus = WatchState.Disconnected;
+        if (!isConnected) {
+            PhoneEvents.resetCount();
             return;
         }
 
-        WatchStatus = WatchState.Connected;
+        if (UpdateSnapshot.size() == 0 ) return;
+        Connector.push(UpdateSnapshot);
+        Watch.push(UpdateSnapshot);
     }
 
 

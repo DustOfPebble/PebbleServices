@@ -1,5 +1,7 @@
 package core.services.PhoneEvents;
 
+import android.os.Bundle;
+
 public interface PhoneEventsUpdates {
-    void PhoneEvents(int Calls, int Messages);
+    void push(Bundle UpdateSnapshot);
 }
