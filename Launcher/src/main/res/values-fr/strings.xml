@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Services de Pebble</string>
+
+    <string name="MissedCalls">Appels</string>
+    <string name="MissedMessages">Messages</string>
+    <string name="Temperature">Température</string>
+
+    <string name="ServicePhoneEvents">Surveilllance des appels et SMS pendant les deconnections</string>
+    <string name="ServicePhoneEventsName">Appels et SMS</string>
+
+    <string name="ServiceWeather">Informations Météo fournies par OpenWeatherMap</string>
+    <string name="ServiceWeatherName">Météo</string>
+</resources>
+
+

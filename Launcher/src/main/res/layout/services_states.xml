@@ -5,18 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:paddingBottom="5dp"
     android:paddingLeft="20dp"
     android:paddingRight="20dp"
-    android:paddingTop="10dp"
-    android:paddingBottom="5dp">
+    android:paddingTop="10dp">
 
     <RelativeLayout
         android:id="@+id/missed_messages"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
-        android:adjustViewBounds="false"
-        android:scaleType="fitXY">
+        android:adjustViewBounds="false">
 
         <ImageView
             android:id="@+id/icon_message"
@@ -24,7 +23,10 @@
             android:layout_height="100dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:background="@drawable/messages" />
+            android:adjustViewBounds="false"
+            android:background="@drawable/missed_messages"
+            android:cropToPadding="false"
+            android:scaleType="center" />
 
         <TextView
             android:id="@+id/MessagesCount"
@@ -66,8 +68,9 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:adjustViewBounds="false"
-            android:background="@drawable/calls"
-            android:scaleType="fitXY" />
+            android:background="@drawable/missed_calls"
+            android:cropToPadding="false"
+            android:scaleType="center" />
 
         <TextView
             android:id="@+id/CallDescriptor"
@@ -96,5 +99,48 @@
             tools:textAlignment="center" />
 
     </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/weather_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:paddingTop="20dp">
+
+        <ImageView
+            android:id="@+id/icon_weather"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:adjustViewBounds="false"
+            android:scaleType="center" />
+
+        <TextView
+            android:id="@+id/TempDescriptor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/icon_weather"
+            android:gravity="center_horizontal"
+            android:text="@string/Temperature"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
+            android:textSize="24sp"
+            tools:textAlignment="center" />
+
+        <TextView
+            android:id="@+id/TempValue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/TempDescriptor"
+            android:layout_toEndOf="@+id/icon_weather"
+            android:gravity="center_horizontal"
+            android:paddingTop="5dp"
+            android:text="-"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"
+            android:textSize="36sp"
+            android:textStyle="bold"
+            tools:textAlignment="center" />
+
+    </RelativeLayout>
+
 
 </LinearLayout>

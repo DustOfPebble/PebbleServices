@@ -7,23 +7,32 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import core.services.PhoneEvents.PhoneEventsProvider;
 import core.services.PhoneEvents.PhoneEventsAccess;
 import core.services.PhoneEvents.PhoneEventsUpdates;
 import core.services.Weather.WeatherAccess;
+import core.services.Weather.WeatherCode;
 import core.services.Weather.WeatherProvider;
 import core.services.Weather.WeatherUpdates;
 
-public class StartupSettings extends Activity implements PhoneEventsUpdates, WeatherUpdates,ServiceConnection {
+public class StartupSettings extends Activity implements PhoneEventsUpdates, WeatherUpdates,ServiceConnection, Runnable {
 
     private String LogTag = this.getClass().getSimpleName();
 
     private TextView CallsCounter = null;
     private TextView MessagesCounter = null;
+    private ImageView WeatherIcon = null;
+    private TextView Temperature = null;
+
+    private Handler ViewUpdate = new Handler(Looper.getMainLooper());
+    private Bundle UpdateContent = null;
 
     private PhoneEventsAccess PhoneEventsService = null;
     private WeatherAccess WeatherService = null;
@@ -35,9 +44,11 @@ public class StartupSettings extends Activity implements PhoneEventsUpdates, Wea
         super.onCreate(savedInstanceState);
 
         // Get Instance of used HMI objects
-        setContentView(R.layout.startup_settings);
+        setContentView(R.layout.services_states);
         CallsCounter = (TextView) findViewById(R.id.CallsCount);
         MessagesCounter = (TextView) findViewById(R.id.MessagesCount);
+        WeatherIcon = (ImageView) findViewById(R.id.icon_weather);
+        Temperature = (TextView) findViewById(R.id.TempValue);
 
         // Checking permissions
         Permissions.Append(Manifest.permission.RECEIVE_SMS);
@@ -154,18 +165,35 @@ public class StartupSettings extends Activity implements PhoneEventsUpdates, Wea
      * **********************************************************************/
     @Override
     public void push(Bundle UpdateSnapshot) {
-        for (String key : UpdateSnapshot.keySet()) {
+        UpdateContent =  UpdateSnapshot;
+        ViewUpdate.post(this);
+    }
+
+    /************************************************************************
+     * CallED by HMI main thread
+     * **********************************************************************/
+    @Override
+    public void run() {
+        for (String key : UpdateContent.keySet()) {
 
             // Managing data from push Service
-            if (key.equals(ServicesKeys.CallsID)) CallsCounter.setText(String.valueOf(UpdateSnapshot.getInt(key)));
-            if (key.equals(ServicesKeys.MessagesID)) MessagesCounter.setText(String.valueOf(UpdateSnapshot.getInt(key)));
+            if (key.equals(ServicesKeys.CallsID)) CallsCounter.setText(String.valueOf(UpdateContent.getInt(key)));
+            if (key.equals(ServicesKeys.MessagesID)) MessagesCounter.setText(String.valueOf(UpdateContent.getInt(key)));
 
 
             // Managing data from Weather Service
-//            if (key.equals(ServicesKeys.WeatherID))
-//            if (key.equals(ServicesKeys.TemperatureID))
+            if (key.equals(ServicesKeys.WeatherID)) {
+                int WeatherID = UpdateContent.getInt(key);
+                if (WeatherID == WeatherCode.SunnyID)  WeatherIcon.setImageResource(R.drawable.sunny);
+                if (WeatherID == WeatherCode.CloudyID)  WeatherIcon.setImageResource(R.drawable.cloudy);
+                if (WeatherID == WeatherCode.RainyID)  WeatherIcon.setImageResource(R.drawable.rainy);
+                if (WeatherID == WeatherCode.SunnyRainyID)  WeatherIcon.setImageResource(R.drawable.sunny_rainy);
+                if (WeatherID == WeatherCode.SunnyCloudyID)  WeatherIcon.setImageResource(R.drawable.sunny_cloudy);
+                if (WeatherID == WeatherCode.StormyID)  WeatherIcon.setImageResource(R.drawable.stormy);
+                if (WeatherID == WeatherCode.SnowyID)  WeatherIcon.setImageResource(R.drawable.snowy);
+            }
+            if (key.equals(ServicesKeys.TemperatureID)) Temperature.setText(String.valueOf(UpdateContent.getInt(key))+"°c");
         }
     }
-
 }
 

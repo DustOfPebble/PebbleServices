@@ -6,7 +6,7 @@ package core.services.Weather;
 
 public class WeatherCode {
 /*********************************************************
- * Includes from Smartwacth application
+ * Includes from Smartwatch application
  * #define Sunny 0
  * #define SunnyCloudy 1
  * #define Cloudy 2
