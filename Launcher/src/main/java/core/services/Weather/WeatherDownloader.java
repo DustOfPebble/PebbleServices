@@ -1,12 +1,5 @@
 package core.services.Weather;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.Handler;
-import android.util.Log;
-
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -49,8 +42,8 @@ public class WeatherDownloader extends Thread  {
     @Override
     public void run(){
         String result = null;
-        InputStream stream = null;
-        HttpURLConnection connection = null;
+        InputStream stream;
+        HttpURLConnection connection;
         try {
             URL url = new URL(WeatherURL);
             connection = (HttpURLConnection) url.openConnection();
