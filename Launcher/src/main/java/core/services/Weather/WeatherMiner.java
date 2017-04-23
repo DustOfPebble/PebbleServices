@@ -22,11 +22,7 @@ public class WeatherMiner  {
     }
 
     public void start() {
-        GPS.start();
-    }
-
-    public void stop() {
-        GPS.stop();
+        GPS.update();
     }
 
     private int ID(String Code) {
