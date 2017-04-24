@@ -59,6 +59,8 @@ public class StartupSettings extends Activity implements PhoneEventsUpdates, Wea
         Permissions.Append(Manifest.permission.ACCESS_NETWORK_STATE);
         Permissions.Append(Manifest.permission.ACCESS_FINE_LOCATION);
         Permissions.Append(Manifest.permission.ACCESS_COARSE_LOCATION);
+        Permissions.Append(Manifest.permission.WAKE_LOCK);
+
 
         String Requested = Permissions.Selected();
         while (Requested != null) {
