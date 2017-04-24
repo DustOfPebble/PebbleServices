@@ -8,8 +8,6 @@ import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
-import core.launcher.application.ServicesKeys;
-
 public class PhoneEventsCatcher extends BroadcastReceiver {
 
     private String LogTag = this.getClass().getSimpleName();
@@ -78,8 +76,8 @@ public class PhoneEventsCatcher extends BroadcastReceiver {
             }
 
             Bundle PhoneInfos = new Bundle();
-            PhoneInfos.putInt(ServicesKeys.MessagesID, MissedMessagesCount);
-            PhoneInfos.putInt(ServicesKeys.CallsID, MissedCallsCount);
+            PhoneInfos.putInt(PhoneEventsKeys.MessagesID, MissedMessagesCount);
+            PhoneInfos.putInt(PhoneEventsKeys.CallsID, MissedCallsCount);
             EventManager.Update(PhoneInfos);
         }
     }

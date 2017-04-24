@@ -6,25 +6,37 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
-import core.launcher.application.ServicesKeys;
-import core.launcher.application.SmartWatchExtension;
-import core.launcher.application.WatchState;
+import core.launcher.application.SmartwatchConstants;
+import lib.smartwatch.SmartwatchBundle;
 import lib.smartwatch.SmartwatchEvents;
+import lib.smartwatch.SmartwatchManager;
 
 public class PhoneEventsProvider extends Service implements PhoneEventsQueries, SmartwatchEvents {
 
     private String LogTag = this.getClass().getSimpleName();
 
-    private SmartWatchExtension Watch = null;
+    private SmartwatchManager WatchConnector = null;
     private PhoneEventsAccess Connector=null;
     private PhoneEventsCatcher PhoneEvents = null;
     private boolean isRunning;
 
-    private Bundle UpdateSnapshot = null;
+    private Bundle StoredSnapshot = null;
 
     public PhoneEventsProvider(){
-        UpdateSnapshot = new Bundle();
+        StoredSnapshot = new Bundle();
         Connector = new PhoneEventsAccess();
+    }
+
+    private SmartwatchBundle make(Bundle Snapshot) {
+        SmartwatchBundle WatchSet = new SmartwatchBundle();
+        for (String key : Snapshot.keySet()) {
+            // Managing data from push Service
+            if (key.equals(PhoneEventsKeys.CallsID))
+                WatchSet.update(SmartwatchConstants.CallsCount, (byte) Snapshot.getInt(key), false);
+            if (key.equals(PhoneEventsKeys.MessagesID))
+                WatchSet.update(SmartwatchConstants.MessagesCount, (byte) Snapshot.getInt(key), false);
+        }
+        return WatchSet;
     }
 
     /**************************************************************
@@ -32,9 +44,9 @@ public class PhoneEventsProvider extends Service implements PhoneEventsQueries, 
      *  - Missed Calls
      *  - Missed Messages
      **************************************************************/
-    public void Update(Bundle PhoneInfos) {
-        UpdateSnapshot = PhoneInfos;
-        Connector.push(UpdateSnapshot);
+    public void Update(Bundle Snapshot) {
+        StoredSnapshot = Snapshot;
+        Connector.push(Snapshot);
     }
 
     /**************************************************************
@@ -43,10 +55,8 @@ public class PhoneEventsProvider extends Service implements PhoneEventsQueries, 
     @Override
     public void onCreate(){
         super.onCreate();
+        WatchConnector = new SmartwatchManager(getBaseContext(),this, SmartwatchConstants.WatchUUID);
         Connector.RegisterProvider(this);
-
-        Watch = new SmartWatchExtension(getBaseContext());
-
         PhoneEvents = new PhoneEventsCatcher(this);
         PhoneEvents.enableReceiver(getBaseContext());
         isRunning = false;
@@ -76,23 +86,23 @@ public class PhoneEventsProvider extends Service implements PhoneEventsQueries, 
      **************************************************************/
     @Override
     public void query() {
-        Connector.push(UpdateSnapshot);
+        Connector.push(StoredSnapshot);
     }
 
     /**************************************************************
      *  Callbacks implementation Smartwatch connection state
      **************************************************************/
     @Override
-    public void ConnectedStateChanged(Boolean isConnected) {
-        if (!isConnected) {
+    public void ConnectedStateChanged() {
+        if (!WatchConnector.isConnected()) {
             PhoneEvents.resetCount();
             return;
         }
-
-        if (UpdateSnapshot.size() == 0 ) return;
-        Connector.push(UpdateSnapshot);
-        Watch.push(UpdateSnapshot);
+        Connector.push(StoredSnapshot);
+        Log.d(LogTag, "Pushing --> Smartwatch");
+        WatchConnector.send(make(StoredSnapshot));
     }
 
-
+    @Override
+    public void requestUpdate() { }
 }

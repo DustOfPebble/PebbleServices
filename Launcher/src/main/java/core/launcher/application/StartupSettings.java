@@ -17,8 +17,10 @@ import android.widget.TextView;
 import core.services.PhoneEvents.PhoneEventsProvider;
 import core.services.PhoneEvents.PhoneEventsAccess;
 import core.services.PhoneEvents.PhoneEventsUpdates;
+import core.services.PhoneEvents.PhoneEventsKeys;
 import core.services.Weather.WeatherAccess;
 import core.services.Weather.WeatherCode;
+import core.services.Weather.WeatherKeys;
 import core.services.Weather.WeatherProvider;
 import core.services.Weather.WeatherUpdates;
 
@@ -177,12 +179,12 @@ public class StartupSettings extends Activity implements PhoneEventsUpdates, Wea
         for (String key : UpdateContent.keySet()) {
 
             // Managing data from push Service
-            if (key.equals(ServicesKeys.CallsID)) CallsCounter.setText(String.valueOf(UpdateContent.getInt(key)));
-            if (key.equals(ServicesKeys.MessagesID)) MessagesCounter.setText(String.valueOf(UpdateContent.getInt(key)));
+            if (key.equals(PhoneEventsKeys.CallsID)) CallsCounter.setText(String.valueOf(UpdateContent.getInt(key)));
+            if (key.equals(PhoneEventsKeys.MessagesID)) MessagesCounter.setText(String.valueOf(UpdateContent.getInt(key)));
 
 
             // Managing data from Weather Service
-            if (key.equals(ServicesKeys.WeatherID)) {
+            if (key.equals(WeatherKeys.WeatherID)) {
                 int WeatherID = UpdateContent.getInt(key);
                 if (WeatherID == WeatherCode.SunnyID)  WeatherIcon.setImageResource(R.drawable.sunny);
                 if (WeatherID == WeatherCode.CloudyID)  WeatherIcon.setImageResource(R.drawable.cloudy);
@@ -192,7 +194,7 @@ public class StartupSettings extends Activity implements PhoneEventsUpdates, Wea
                 if (WeatherID == WeatherCode.StormyID)  WeatherIcon.setImageResource(R.drawable.stormy);
                 if (WeatherID == WeatherCode.SnowyID)  WeatherIcon.setImageResource(R.drawable.snowy);
             }
-            if (key.equals(ServicesKeys.TemperatureID)) Temperature.setText(String.valueOf(UpdateContent.getInt(key))+"°c");
+            if (key.equals(WeatherKeys.TemperatureID)) Temperature.setText(String.valueOf(UpdateContent.getInt(key))+"°c");
         }
     }
 }

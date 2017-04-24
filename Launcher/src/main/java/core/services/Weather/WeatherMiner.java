@@ -6,7 +6,7 @@ import android.os.Bundle;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import core.launcher.application.ServicesKeys;
+import core.services.PhoneEvents.PhoneEventsKeys;
 
 public class WeatherMiner  {
 
@@ -61,8 +61,8 @@ public class WeatherMiner  {
             Temperature = (int)(Kelvin - 273.15);
 
             Bundle WeatherInfo = new Bundle();
-            WeatherInfo.putInt(ServicesKeys.WeatherID, WeatherID);
-            WeatherInfo.putInt(ServicesKeys.TemperatureID, Temperature);
+            WeatherInfo.putInt(WeatherKeys.WeatherID, WeatherID);
+            WeatherInfo.putInt(WeatherKeys.TemperatureID, Temperature);
             Listener.Update(WeatherInfo);
 
         } catch (Exception Error) { Error.printStackTrace();}

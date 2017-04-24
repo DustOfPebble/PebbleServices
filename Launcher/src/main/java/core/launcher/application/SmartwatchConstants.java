@@ -5,18 +5,18 @@ package core.launcher.application;
  ********************************************************************/
 
 public class SmartwatchConstants {
-    static final String WatchUUID ="e603e869-8eff-40c3-9957-6c6f6087fd57";
+    static public final String WatchUUID ="e603e869-8eff-40c3-9957-6c6f6087fd57";
 
     // Information about Phone events
-    static final int CallsCount = 1;
-    static final int MessagesCount = 2;
+    static public final int CallsCount = 1;
+    static public final int MessagesCount = 2;
 
     // Information about Weather events
-    static final int WeatherSkyNow = 4;
-    static final int WeatherTemperatureNow = 5;
-    static final int WeatherTemperatureMax = 6;
-    static final int WeatherTemperatureMin = 7;
-    static final int WeatherLocationName = 8;
+    static public final int WeatherSkyNow = 4;
+    static public final int WeatherTemperatureNow = 5;
+    static public final int WeatherTemperatureMax = 6;
+    static public final int WeatherTemperatureMin = 7;
+    static public final int WeatherLocationName = 8;
 
     /********************************
      *  Key definition for messages *
