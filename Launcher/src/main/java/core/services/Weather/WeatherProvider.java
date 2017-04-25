@@ -7,7 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.PowerManager;
+
 import android.util.Log;
 
 import core.launcher.application.SmartwatchConstants;
@@ -23,15 +23,11 @@ public class WeatherProvider extends Service implements WeatherQueries, Smartwat
     private SmartwatchManager WatchConnector = null;
     private WeatherAccess Connector=null;
 
-    private PowerManager PillsBox = null;
-    private PowerManager.WakeLock Pill = null;
-    private long LifeTime = 10000; // in ms
-    private static final String WakeUp = "Cafeine";
-
     private WeatherMiner Miner = null;
     private Bundle StoredSnapshot = null;
 
-    private long RefreshDelay = 15*60*1000; // in s
+    private WakeUpManager WakeUp = null;
+    private long RefreshDelay = 5*60*1000; // in ms
 
     public WeatherProvider(){
         StoredSnapshot = new Bundle();
@@ -57,6 +53,7 @@ public class WeatherProvider extends Service implements WeatherQueries, Smartwat
         return WatchSet;
     }
 
+
     /**************************************************************
      *  Callbacks implementation from WeatherMiner
      **************************************************************/
@@ -76,29 +73,20 @@ public class WeatherProvider extends Service implements WeatherQueries, Smartwat
         WatchConnector = new SmartwatchManager(getBaseContext(),this, SmartwatchConstants.WatchUUID);
         Connector.RegisterProvider(this);
         Miner = new WeatherMiner(this);
-        PillsBox = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        WakeUp = new WakeUpManager(this);
         isRunning = false;
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-    // Capturing a WakeLock
-        if (Pill == null) Pill = PillsBox.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, WakeUp);
-        Pill.acquire(LifeTime);
-
         if (!isRunning) {
             Log.d(LogTag, "Starting service ...");
             isRunning = true;
         }
         else Log.d(LogTag, "Service is already running !");
 
+        WakeUp.setNext(RefreshDelay);
         Miner.start();
-
-      // Program an Alarm is the device is asleep
-        AlarmManager alarmManager = (AlarmManager) getSystemService(getBaseContext().ALARM_SERVICE);
-        Intent alarmIntent = new Intent(this, WeatherProvider.class);
-        PendingIntent pendingIntent = PendingIntent.getService(this, 1, alarmIntent, 0);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + RefreshDelay, pendingIntent);
 
         return START_STICKY;
     }

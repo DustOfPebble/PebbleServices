@@ -45,7 +45,7 @@ public class SmartwatchManager extends BroadcastReceiver {
 
     public void send(SmartwatchBundle DataSet) {
         if (!isConnected()) return;
-        Log.d (LogTag, "Sending "+DataSet.size()+" block to Smartwatch...");
+        Log.d (LogTag, "Sending "+DataSet.size()+" keys to Smartwatch...");
         PebbleKit.sendDataToPebble(SavedContext, Identifier, DataSet);
     }
 

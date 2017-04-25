@@ -1,5 +1,7 @@
 package core.services.Weather;
 
+import android.util.Log;
+
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -70,8 +72,12 @@ public class WeatherDownloader extends Thread  {
             }
             stream.close();
             connection.disconnect();
+            Log.d(LogTag, "Download Succeed ["+result.length()+" Bytes]");
             Listener.process(result);
-        } catch (Exception Error) {Error.printStackTrace();}
+        } catch (Exception Error) {
+            Log.d(LogTag, "Download Failed ["+Error.getMessage()+"]");
+            Listener.process(null);
+        }
     }
 }
 

@@ -3,6 +3,7 @@ package core.launcher.application;
 import android.Manifest;
 import android.app.Activity;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
@@ -70,13 +71,13 @@ public class StartupSettings extends Activity implements PhoneEventsUpdates, Wea
         }
         String[] NotGrantedPermissions = Permissions.NotGranted();
         if (NotGrantedPermissions.length > 0) requestPermissions(NotGrantedPermissions,0);
-        else StartServices();
+        else PermissionsChecked = true;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (PermissionsChecked) StartServices();
+        StartServices();
     }
 
     @Override
@@ -89,9 +90,9 @@ public class StartupSettings extends Activity implements PhoneEventsUpdates, Wea
     }
 
     private void StartServices(){
-        PermissionsChecked = true;
-        Intent ServiceStarter;
+        if (!PermissionsChecked) return;
 
+        Intent ServiceStarter;
         // Start Service
         ServiceStarter = new Intent(this, PhoneEventsProvider.class);
         Log.d(LogTag, "Requesting Service ["+ PhoneEventsProvider.class.getSimpleName() +"] to start...");
@@ -115,7 +116,7 @@ public class StartupSettings extends Activity implements PhoneEventsUpdates, Wea
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         Log.d(LogTag, "Collecting Permissions results...");
 
-        Boolean PermissionsGranted = true;
+        boolean PermissionsGranted = true;
         for(int i = 0; i < grantResults.length; i++) {
             if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
                 PermissionsGranted = false;
@@ -123,8 +124,9 @@ public class StartupSettings extends Activity implements PhoneEventsUpdates, Wea
             }
         }
 
-        if (PermissionsGranted) StartServices();
-        else finish();
+        if (!PermissionsGranted) finish();
+        PermissionsChecked = true;
+        StartServices();
     }
 
     /************************************************************************
