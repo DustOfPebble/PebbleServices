@@ -20,7 +20,7 @@ public class WakeUpManager extends BroadcastReceiver {
 
     private PowerManager DreamBox = null;
     private PowerManager.WakeLock StayAwake = null;
-    private long LifeTime = 30000; // in ms
+    private long LifeTime = 5000; // in ms
     private static final String Coffee = "Cafeine";
     private Intent ServiceStarter;
     private Intent WakeUpEvent = null;
