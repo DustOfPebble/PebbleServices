@@ -78,14 +78,15 @@ public class WeatherProvider extends Service implements WeatherQueries, Smartwat
      **************************************************************/
     public void Update(Bundle Snapshot) {
         if (Snapshot == null) {
-//            pushNotification("Download failed");
+            pushNotification(getResources().getString(R.string.WeatherInfoNotFetched));
             return;
         }
 
         if (Snapshot.size() == 0) {
-//            pushNotification("JSON parse error.");
+            pushNotification(getResources().getString(R.string.WeatherInfoNotFetched));
             return;
         }
+
         isWaitingConnectivity = false;
         pushNotification(getResources().getString(R.string.WeatherInfoFetched));
         Connector.push(Snapshot);
