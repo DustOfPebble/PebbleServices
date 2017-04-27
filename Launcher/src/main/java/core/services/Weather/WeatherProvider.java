@@ -1,15 +1,15 @@
 package core.services.Weather;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
 
 import android.util.Log;
 
+import core.launcher.application.R;
 import core.launcher.application.SmartwatchConstants;
 import lib.smartwatch.SmartwatchBundle;
 import lib.smartwatch.SmartwatchEvents;
@@ -19,18 +19,21 @@ public class WeatherProvider extends Service implements WeatherQueries, Smartwat
 
     private String LogTag = this.getClass().getSimpleName();
     private boolean isRunning;
+    private boolean isWaitingConnectivity;
 
     private SmartwatchManager WatchConnector = null;
-    private WeatherAccess Connector=null;
+    private WeatherAccess Connector = null;
+    private NetworkEvents AccessNetwork = null;
 
     private WeatherMiner Miner = null;
-    private Bundle StoredSnapshot = null;
 
     private WakeUpManager WakeUp = null;
-    private long RefreshDelay = 5*60*1000; // in ms
+    private long SleepDelay = 20*60*1000; // in ms
+    private long NextUpdateTimeStamps = 0;
+
+    private int ID = 0;
 
     public WeatherProvider(){
-        StoredSnapshot = new Bundle();
         Connector = new WeatherAccess();
         isRunning = false;
     }
@@ -53,12 +56,41 @@ public class WeatherProvider extends Service implements WeatherQueries, Smartwat
         return WatchSet;
     }
 
+    private void pushNotification(String Message){
+        NotificationManager MessageSender = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        Notification.Builder MessageFactory = new Notification.Builder(this)
+                .setSmallIcon(R.mipmap.launcher)
+                .setContentTitle("WakeUp Event ")
+                .setContentText(Message);
+
+        MessageSender.notify(ID,MessageFactory.build());
+        ID++;
+    }
+
+    /**************************************************************
+     *  Callbacks implementation from NetworkEnabler
+     **************************************************************/
+    public void Enabled() {
+        if (!isWaitingConnectivity) return;
+        Log.d(LogTag, "Connectivity enabled --> Updating");
+        Miner.start();
+    }
 
     /**************************************************************
      *  Callbacks implementation from WeatherMiner
      **************************************************************/
     public void Update(Bundle Snapshot) {
-        StoredSnapshot = Snapshot;
+        if (Snapshot == null) {
+//            pushNotification("Download failed");
+            return;
+        }
+
+        if (Snapshot.size() == 0) {
+//            pushNotification("JSON parse error.");
+            return;
+        }
+        isWaitingConnectivity = false;
+        pushNotification("Download succeed.");
         Connector.push(Snapshot);
         if (!WatchConnector.isConnected()) return;
         Log.d(LogTag, "Pushing --> Smartwatch");
@@ -71,10 +103,15 @@ public class WeatherProvider extends Service implements WeatherQueries, Smartwat
     public void onCreate(){
         super.onCreate();
         WatchConnector = new SmartwatchManager(getBaseContext(),this, SmartwatchConstants.WatchUUID);
+        AccessNetwork = new NetworkEvents(this);
+
         Connector.RegisterProvider(this);
         Miner = new WeatherMiner(this);
         WakeUp = new WakeUpManager(this);
         isRunning = false;
+        isWaitingConnectivity = false;
+        NextUpdateTimeStamps =  System.currentTimeMillis() + SleepDelay;
+        WakeUp.setNext(SleepDelay);
     }
 
     @Override
@@ -83,10 +120,17 @@ public class WeatherProvider extends Service implements WeatherQueries, Smartwat
             Log.d(LogTag, "Starting service ...");
             isRunning = true;
         }
-        else Log.d(LogTag, "Service is already running !");
 
-        WakeUp.setNext(RefreshDelay);
-        Miner.start();
+        if (System.currentTimeMillis() > NextUpdateTimeStamps) {
+            WakeUp.setNext(SleepDelay);
+            NextUpdateTimeStamps =  System.currentTimeMillis() + SleepDelay;
+        }
+
+        isWaitingConnectivity = false;
+        if (AccessNetwork.isConnected()) {
+            Log.d(LogTag, "Service started with connectivity enabled ==> Updating");
+            Miner.start();
+        }
 
         return START_STICKY;
     }
@@ -108,8 +152,8 @@ public class WeatherProvider extends Service implements WeatherQueries, Smartwat
      **************************************************************/
     @Override
     public void query() {
-        if (StoredSnapshot.size() == 0) return;
-        Connector.push(StoredSnapshot);
+        if (AccessNetwork.isConnected()) { Miner.start(); return;}
+        isWaitingConnectivity =  true;
     }
 
     /**************************************************************
@@ -118,12 +162,17 @@ public class WeatherProvider extends Service implements WeatherQueries, Smartwat
     @Override
     public void ConnectedStateChanged() {
         if (!WatchConnector.isConnected()) return;
-        Miner.start();
+
+        if (AccessNetwork.isConnected()) {
+            Miner.start();
+            return;
+        }
+
+        isWaitingConnectivity =  true;
     }
 
     @Override
     public void requestUpdate() {
         Log.d(LogTag, "Watch requesting update ");
-        Miner.start();
     }
 }

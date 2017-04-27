@@ -51,7 +51,10 @@ public class WeatherMiner  {
     // Called by Downloader when finished and successful
     public void process(String Downloaded){
         isRunning = false;
-        if (Downloaded == null) return;
+        if (Downloaded == null) {
+            Listener.Update(null);
+            return;
+        }
 
         int WeatherID = 0;
         int Temperature = 0;
@@ -71,6 +74,9 @@ public class WeatherMiner  {
             WeatherInfo.putInt(WeatherKeys.TemperatureID, Temperature);
             Listener.Update(WeatherInfo);
 
-        } catch (Exception Error) { Log.d(LogTag, "Error in JSon processing => "+ Downloaded);}
+        } catch (Exception Error) {
+            Log.d(LogTag, "Error in JSon processing => "+ Downloaded);
+            Listener.Update(new Bundle());
+        }
     }
 }

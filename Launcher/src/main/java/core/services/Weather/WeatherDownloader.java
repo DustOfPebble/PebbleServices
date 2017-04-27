@@ -15,7 +15,9 @@ public class WeatherDownloader extends Thread  {
     static private  String KeyAPI ="3d28c03d7fb2f5f4b4b7bc98367cc2cd";
 
     private WeatherMiner Listener = null;
+
     private String WeatherURL = null;
+
 
     private int maxLength = 10000; // in Bytes
 
@@ -24,7 +26,9 @@ public class WeatherDownloader extends Thread  {
     }
 
     public String setLocation(double Longitude, double Latitude){
-        // query template : api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={key}
+        /********************************************************************************************
+         * query template : api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={key}
+         ********************************************************************************************/
         String Query = "http://";
         Query +=  Server;
         Query +=  Command;
@@ -49,8 +53,8 @@ public class WeatherDownloader extends Thread  {
         try {
             URL url = new URL(WeatherURL);
             connection = (HttpURLConnection) url.openConnection();
-            connection.setReadTimeout(3000);
-            connection.setConnectTimeout(3000);
+            connection.setReadTimeout(10000);
+            connection.setConnectTimeout(15000);
             connection.setRequestMethod("GET");
             connection.setDoInput(true);
             connection.connect();

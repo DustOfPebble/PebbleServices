@@ -20,7 +20,7 @@ public class WakeUpManager extends BroadcastReceiver {
 
     private PowerManager DreamBox = null;
     private PowerManager.WakeLock StayAwake = null;
-    private long LifeTime = 5000; // in ms
+    private long LifeTime = 30000; // in ms
     private static final String Coffee = "Cafeine";
     private Intent ServiceStarter;
     private Intent WakeUpEvent = null;
@@ -45,6 +45,7 @@ public class WakeUpManager extends BroadcastReceiver {
         ID++;
         PendingIntent WaitingEvent = PendingIntent.getBroadcast(Service, ID, WakeUpEvent, PendingIntent.FLAG_ONE_SHOT);
         Trigger.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + SleepDelay, WaitingEvent);
+        Log.d(LogTag, "Setting a Wake Up in "+SleepDelay+"ms");
     }
 
     /**************************************************************
