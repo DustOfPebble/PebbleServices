@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Pebble Services</string>
 
-    <string name="Connected">Smartwatch is connected</string>
-    <string name="Disconnected">Smartwatch is not connected</string>
+    <string name="WeatherInfoFetched">Weather informations updated</string>
+    <string name="WeatherInfoNotFetched">No Weather informations</string>
 
     <string name="MissedCalls">Calls count</string>
     <string name="MissedMessages">Messages count</string>

@@ -31,7 +31,7 @@ public class WeatherProvider extends Service implements WeatherQueries, Smartwat
     private long SleepDelay = 20*60*1000; // in ms
     private long NextUpdateTimeStamps = 0;
 
-    private int ID = 0;
+    private final int ID = R.string.ServiceWeather;
 
     public WeatherProvider(){
         Connector = new WeatherAccess();
@@ -60,11 +60,8 @@ public class WeatherProvider extends Service implements WeatherQueries, Smartwat
         NotificationManager MessageSender = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         Notification.Builder MessageFactory = new Notification.Builder(this)
                 .setSmallIcon(R.mipmap.launcher)
-                .setContentTitle("WakeUp Event ")
-                .setContentText(Message);
-
+                .setContentTitle(Message);
         MessageSender.notify(ID,MessageFactory.build());
-        ID++;
     }
 
     /**************************************************************
@@ -90,7 +87,7 @@ public class WeatherProvider extends Service implements WeatherQueries, Smartwat
             return;
         }
         isWaitingConnectivity = false;
-        pushNotification("Download succeed.");
+        pushNotification(getResources().getString(R.string.WeatherInfoFetched));
         Connector.push(Snapshot);
         if (!WatchConnector.isConnected()) return;
         Log.d(LogTag, "Pushing --> Smartwatch");
