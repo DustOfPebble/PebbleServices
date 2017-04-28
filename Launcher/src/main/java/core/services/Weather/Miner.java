@@ -11,13 +11,13 @@ public class Miner {
 
     private String LogTag = this.getClass().getSimpleName();
 
-    private Provider Listener;
+    private WeatherProvider Listener;
     private Position GPS = null;
     private core.services.Weather.Downloader Downloader = null;
 
     private static boolean isRunning = false;
 
-    public Miner(Provider Parent) {
+    public Miner(WeatherProvider Parent) {
         Listener = Parent;
         GPS = new Position(Listener, this);
     }

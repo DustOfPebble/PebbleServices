@@ -11,20 +11,20 @@ import lib.smartwatch.SmartwatchBundle;
 import lib.smartwatch.SmartwatchEvents;
 import lib.smartwatch.SmartwatchManager;
 
-public class Provider extends Service implements Queries, SmartwatchEvents {
+public class PhoneEventsProvider extends Service implements Queries, SmartwatchEvents {
 
     private String LogTag = this.getClass().getSimpleName();
 
     private SmartwatchManager WatchConnector = null;
-    private Bind Connector=null;
+    private PhoneEventsBind Connector=null;
     private EventsCatcher PhoneEvents = null;
     private boolean isRunning;
 
     private Bundle StoredSnapshot = null;
 
-    public Provider(){
+    public PhoneEventsProvider(){
         StoredSnapshot = new Bundle();
-        Connector = new Bind();
+        Connector = new PhoneEventsBind();
     }
 
     private SmartwatchBundle make(Bundle Snapshot) {

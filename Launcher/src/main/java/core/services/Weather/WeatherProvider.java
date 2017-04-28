@@ -15,14 +15,14 @@ import lib.smartwatch.SmartwatchBundle;
 import lib.smartwatch.SmartwatchEvents;
 import lib.smartwatch.SmartwatchManager;
 
-public class Provider extends Service implements Queries, SmartwatchEvents {
+public class WeatherProvider extends Service implements Queries, SmartwatchEvents {
 
     private String LogTag = this.getClass().getSimpleName();
     private boolean isRunning;
     private boolean isWaitingConnectivity;
 
     private SmartwatchManager WatchConnector = null;
-    private Bind Connector = null;
+    private WeatherBind Connector = null;
     private Network AccessNetwork = null;
 
     private core.services.Weather.Miner Miner = null;
@@ -33,8 +33,8 @@ public class Provider extends Service implements Queries, SmartwatchEvents {
 
     private final int ID = R.string.ServiceWeather;
 
-    public Provider(){
-        Connector = new Bind();
+    public WeatherProvider(){
+        Connector = new WeatherBind();
         isRunning = false;
     }
 

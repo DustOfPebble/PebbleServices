@@ -4,15 +4,15 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.util.Log;
 
-public class Bind extends Binder {
+public class WeatherBind extends Binder {
 
     private String LogTag = this.getClass().getSimpleName();
 
     private Queries Provider = null;
-    private Updates Listener = null;
+    private WeatherUpdates Listener = null;
 
     public void RegisterProvider(Queries Provider) { this.Provider = Provider; }
-    public void RegisterListener(Updates Listener) { this.Listener = Listener; }
+    public void RegisterListener(WeatherUpdates Listener) { this.Listener = Listener; }
 
     public void query() { Provider.query(); }
 

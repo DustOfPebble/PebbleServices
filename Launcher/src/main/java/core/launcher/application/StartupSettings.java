@@ -14,13 +14,16 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import core.services.PhoneEvents.Provider;
-import core.services.PhoneEvents.Bind;
-import core.services.PhoneEvents.Updates;
+import core.services.PhoneEvents.PhoneEventsProvider;
+import core.services.PhoneEvents.PhoneEventsBind;
+import core.services.PhoneEvents.PhoneEventsUpdates;
 import core.services.PhoneEvents.Keys;
 import core.services.Weather.CodesKeys;
+import core.services.Weather.WeatherBind;
+import core.services.Weather.WeatherProvider;
+import core.services.Weather.WeatherUpdates;
 
-public class StartupSettings extends Activity implements Updates, core.services.Weather.Updates,ServiceConnection, Runnable {
+public class StartupSettings extends Activity implements PhoneEventsUpdates, WeatherUpdates,ServiceConnection, Runnable {
 
     private String LogTag = this.getClass().getSimpleName();
 
@@ -32,8 +35,8 @@ public class StartupSettings extends Activity implements Updates, core.services.
     private Handler ViewUpdate = new Handler(Looper.getMainLooper());
     private Bundle UpdateContent = null;
 
-    private Bind PhoneEventsService = null;
-    private core.services.Weather.Bind WeatherService = null;
+    private PhoneEventsBind PhoneEventsService = null;
+    private WeatherBind WeatherService = null;
 
     private PermissionHelper Permissions = new PermissionHelper();
     private boolean PermissionsChecked = false;
@@ -89,13 +92,13 @@ public class StartupSettings extends Activity implements Updates, core.services.
 
         Intent ServiceStarter;
         // Start Service
-        ServiceStarter = new Intent(this, Provider.class);
-        Log.d(LogTag, "Requesting Service ["+ Provider.class.getSimpleName() +"] to start...");
+        ServiceStarter = new Intent(this, PhoneEventsProvider.class);
+        Log.d(LogTag, "Requesting Service ["+ PhoneEventsProvider.class.getSimpleName() +"] to start...");
         startService(ServiceStarter);
         bindService(ServiceStarter, this, 0);
 
-        ServiceStarter = new Intent(this, core.services.Weather.Provider.class);
-        Log.d(LogTag, "Requesting Service ["+ core.services.Weather.Provider.class.getSimpleName() +"] to start...");
+        ServiceStarter = new Intent(this, WeatherProvider.class);
+        Log.d(LogTag, "Requesting Service ["+ WeatherProvider.class.getSimpleName() +"] to start...");
         startService(ServiceStarter);
         bindService(ServiceStarter, this, 0);
     }
@@ -132,15 +135,15 @@ public class StartupSettings extends Activity implements Updates, core.services.
         Log.d(LogTag, "Connected to " + name.getClassName() + " Service");
 
         // Connection from push Service
-        if (Provider.class.getName().equals(name.getClassName())) {
-            PhoneEventsService = (Bind) service;
+        if (PhoneEventsProvider.class.getName().equals(name.getClassName())) {
+            PhoneEventsService = (PhoneEventsBind) service;
             PhoneEventsService.RegisterListener(this);
             PhoneEventsService.query();
         }
 
         // Connection from push Service
-        if (core.services.Weather.Provider.class.getName().equals(name.getClassName())) {
-            WeatherService = (core.services.Weather.Bind) service;
+        if (WeatherProvider.class.getName().equals(name.getClassName())) {
+            WeatherService = (WeatherBind) service;
             WeatherService.RegisterListener(this);
             WeatherService.query();
         }
@@ -151,12 +154,12 @@ public class StartupSettings extends Activity implements Updates, core.services.
         Log.d(LogTag, "Disconnected from " + name.getClassName()  + " Service");
 
         // Disconnection from push Service
-        if (Provider.class.getName().equals(name.getClassName())) {
+        if (PhoneEventsProvider.class.getName().equals(name.getClassName())) {
             PhoneEventsService = null;
         }
 
         // Disconnection from push Service
-        if (core.services.Weather.Provider.class.getName().equals(name.getClassName())) {
+        if (WeatherProvider.class.getName().equals(name.getClassName())) {
             WeatherService = null;
         }
     }

@@ -15,7 +15,7 @@ public class EventsCatcher extends BroadcastReceiver {
     private static final String SMS = "android.provider.Telephony.SMS_RECEIVED";
     private static final String CALL = "android.intent.action.PHONE_STATE";
 
-    private Provider EventManager;
+    private PhoneEventsProvider EventManager;
     private IntentFilter EventFilters = new IntentFilter();
 
     private int MissedCallsCount = 0;
@@ -25,7 +25,7 @@ public class EventsCatcher extends BroadcastReceiver {
     private boolean hasPickUp = false;
 
 
-    public EventsCatcher(Provider Listener ) {
+    public EventsCatcher(PhoneEventsProvider Listener ) {
         EventManager = Listener;
         EventFilters.addAction(SMS);
         EventFilters.addAction(CALL);
