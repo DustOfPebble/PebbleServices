@@ -8,14 +8,14 @@ import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
-public class PhoneEventsCatcher extends BroadcastReceiver {
+public class EventsCatcher extends BroadcastReceiver {
 
     private String LogTag = this.getClass().getSimpleName();
 
     private static final String SMS = "android.provider.Telephony.SMS_RECEIVED";
     private static final String CALL = "android.intent.action.PHONE_STATE";
 
-    private PhoneEventsProvider EventManager;
+    private Provider EventManager;
     private IntentFilter EventFilters = new IntentFilter();
 
     private int MissedCallsCount = 0;
@@ -25,7 +25,7 @@ public class PhoneEventsCatcher extends BroadcastReceiver {
     private boolean hasPickUp = false;
 
 
-    public PhoneEventsCatcher(PhoneEventsProvider Listener ) {
+    public EventsCatcher(Provider Listener ) {
         EventManager = Listener;
         EventFilters.addAction(SMS);
         EventFilters.addAction(CALL);
@@ -76,8 +76,8 @@ public class PhoneEventsCatcher extends BroadcastReceiver {
             }
 
             Bundle PhoneInfos = new Bundle();
-            PhoneInfos.putInt(PhoneEventsKeys.MessagesID, MissedMessagesCount);
-            PhoneInfos.putInt(PhoneEventsKeys.CallsID, MissedCallsCount);
+            PhoneInfos.putInt(Keys.MessagesID, MissedMessagesCount);
+            PhoneInfos.putInt(Keys.CallsID, MissedCallsCount);
             EventManager.Update(PhoneInfos);
         }
     }

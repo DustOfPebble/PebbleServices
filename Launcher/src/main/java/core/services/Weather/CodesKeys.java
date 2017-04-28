@@ -4,7 +4,7 @@ package core.services.Weather;
  * Created by xavier on 20/04/17.
  */
 
-public class WeatherCode {
+public class CodesKeys {
 /*********************************************************
  * Includes from Smartwatch application
  * #define Sunny 0

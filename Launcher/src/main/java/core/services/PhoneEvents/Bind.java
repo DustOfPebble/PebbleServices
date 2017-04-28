@@ -4,15 +4,15 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.util.Log;
 
-public class PhoneEventsAccess extends Binder {
+public class Bind extends Binder {
 
     private String LogTag = this.getClass().getSimpleName();
 
-    private PhoneEventsQueries Provider = null;
-    private PhoneEventsUpdates Listener = null;
+    private Queries Provider = null;
+    private Updates Listener = null;
 
-    public void RegisterProvider(PhoneEventsQueries Provider) { this.Provider = Provider; }
-    public void RegisterListener(PhoneEventsUpdates Listener) { this.Listener = Listener; }
+    public void RegisterProvider(Queries Provider) { this.Provider = Provider; }
+    public void RegisterListener(Updates Listener) { this.Listener = Listener; }
 
     public void query() { Provider.query(); }
 

@@ -11,29 +11,29 @@ import lib.smartwatch.SmartwatchBundle;
 import lib.smartwatch.SmartwatchEvents;
 import lib.smartwatch.SmartwatchManager;
 
-public class PhoneEventsProvider extends Service implements PhoneEventsQueries, SmartwatchEvents {
+public class Provider extends Service implements Queries, SmartwatchEvents {
 
     private String LogTag = this.getClass().getSimpleName();
 
     private SmartwatchManager WatchConnector = null;
-    private PhoneEventsAccess Connector=null;
-    private PhoneEventsCatcher PhoneEvents = null;
+    private Bind Connector=null;
+    private EventsCatcher PhoneEvents = null;
     private boolean isRunning;
 
     private Bundle StoredSnapshot = null;
 
-    public PhoneEventsProvider(){
+    public Provider(){
         StoredSnapshot = new Bundle();
-        Connector = new PhoneEventsAccess();
+        Connector = new Bind();
     }
 
     private SmartwatchBundle make(Bundle Snapshot) {
         SmartwatchBundle WatchSet = new SmartwatchBundle();
         for (String key : Snapshot.keySet()) {
             // Managing data from push Service
-            if (key.equals(PhoneEventsKeys.CallsID))
+            if (key.equals(Keys.CallsID))
                 WatchSet.update(SmartwatchConstants.CallsCount, (byte) Snapshot.getInt(key), false);
-            if (key.equals(PhoneEventsKeys.MessagesID))
+            if (key.equals(Keys.MessagesID))
                 WatchSet.update(SmartwatchConstants.MessagesCount, (byte) Snapshot.getInt(key), false);
         }
         return WatchSet;
@@ -57,7 +57,7 @@ public class PhoneEventsProvider extends Service implements PhoneEventsQueries, 
         super.onCreate();
         WatchConnector = new SmartwatchManager(getBaseContext(),this, SmartwatchConstants.WatchUUID);
         Connector.RegisterProvider(this);
-        PhoneEvents = new PhoneEventsCatcher(this);
+        PhoneEvents = new EventsCatcher(this);
         PhoneEvents.enableReceiver(getBaseContext());
         isRunning = false;
     }

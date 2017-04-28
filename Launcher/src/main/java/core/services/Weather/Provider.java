@@ -15,26 +15,26 @@ import lib.smartwatch.SmartwatchBundle;
 import lib.smartwatch.SmartwatchEvents;
 import lib.smartwatch.SmartwatchManager;
 
-public class WeatherProvider extends Service implements WeatherQueries, SmartwatchEvents {
+public class Provider extends Service implements Queries, SmartwatchEvents {
 
     private String LogTag = this.getClass().getSimpleName();
     private boolean isRunning;
     private boolean isWaitingConnectivity;
 
     private SmartwatchManager WatchConnector = null;
-    private WeatherAccess Connector = null;
-    private NetworkEvents AccessNetwork = null;
+    private Bind Connector = null;
+    private Network AccessNetwork = null;
 
-    private WeatherMiner Miner = null;
+    private core.services.Weather.Miner Miner = null;
 
-    private WakeUpManager WakeUp = null;
+    private core.services.Weather.WakeUp WakeUp = null;
     private long SleepDelay = 20*60*1000; // in ms
     private long NextUpdateTimeStamps = 0;
 
     private final int ID = R.string.ServiceWeather;
 
-    public WeatherProvider(){
-        Connector = new WeatherAccess();
+    public Provider(){
+        Connector = new Bind();
         isRunning = false;
     }
 
@@ -42,15 +42,15 @@ public class WeatherProvider extends Service implements WeatherQueries, Smartwat
         SmartwatchBundle WatchSet = new SmartwatchBundle();
         for (String key : Snapshot.keySet()) {
             // Managing data from Weather Service
-            if (key.equals(WeatherKeys.WeatherID))
+            if (key.equals(Keys.WeatherID))
                 WatchSet.update(SmartwatchConstants.WeatherSkyNow, (byte) Snapshot.getInt(key), false);
-            if (key.equals(WeatherKeys.TemperatureID))
+            if (key.equals(Keys.TemperatureID))
                 WatchSet.update(SmartwatchConstants.WeatherTemperatureNow, (byte) Snapshot.getInt(key), true);
-            if (key.equals(WeatherKeys.TemperatureMaxID))
+            if (key.equals(Keys.TemperatureMaxID))
                 WatchSet.update(SmartwatchConstants.WeatherTemperatureMax, (byte) Snapshot.getInt(key), true);
-            if (key.equals(WeatherKeys.TemperatureMinID))
+            if (key.equals(Keys.TemperatureMinID))
                 WatchSet.update(SmartwatchConstants.WeatherTemperatureMin, (byte) Snapshot.getInt(key), true);
-            if (key.equals(WeatherKeys.LocationNameID))
+            if (key.equals(Keys.LocationNameID))
                 WatchSet.update(SmartwatchConstants.WeatherLocationName, Snapshot.getString(key));
         }
         return WatchSet;
@@ -101,11 +101,11 @@ public class WeatherProvider extends Service implements WeatherQueries, Smartwat
     public void onCreate(){
         super.onCreate();
         WatchConnector = new SmartwatchManager(getBaseContext(),this, SmartwatchConstants.WatchUUID);
-        AccessNetwork = new NetworkEvents(this);
+        AccessNetwork = new Network(this);
 
         Connector.RegisterProvider(this);
-        Miner = new WeatherMiner(this);
-        WakeUp = new WakeUpManager(this);
+        Miner = new Miner(this);
+        WakeUp = new WakeUp(this);
         isRunning = false;
         isWaitingConnectivity = false;
         NextUpdateTimeStamps =  System.currentTimeMillis() + SleepDelay;

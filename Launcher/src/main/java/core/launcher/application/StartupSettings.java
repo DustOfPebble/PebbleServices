@@ -3,7 +3,6 @@ package core.launcher.application;
 import android.Manifest;
 import android.app.Activity;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
@@ -15,17 +14,13 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import core.services.PhoneEvents.PhoneEventsProvider;
-import core.services.PhoneEvents.PhoneEventsAccess;
-import core.services.PhoneEvents.PhoneEventsUpdates;
-import core.services.PhoneEvents.PhoneEventsKeys;
-import core.services.Weather.WeatherAccess;
-import core.services.Weather.WeatherCode;
-import core.services.Weather.WeatherKeys;
-import core.services.Weather.WeatherProvider;
-import core.services.Weather.WeatherUpdates;
+import core.services.PhoneEvents.Provider;
+import core.services.PhoneEvents.Bind;
+import core.services.PhoneEvents.Updates;
+import core.services.PhoneEvents.Keys;
+import core.services.Weather.CodesKeys;
 
-public class StartupSettings extends Activity implements PhoneEventsUpdates, WeatherUpdates,ServiceConnection, Runnable {
+public class StartupSettings extends Activity implements Updates, core.services.Weather.Updates,ServiceConnection, Runnable {
 
     private String LogTag = this.getClass().getSimpleName();
 
@@ -37,8 +32,8 @@ public class StartupSettings extends Activity implements PhoneEventsUpdates, Wea
     private Handler ViewUpdate = new Handler(Looper.getMainLooper());
     private Bundle UpdateContent = null;
 
-    private PhoneEventsAccess PhoneEventsService = null;
-    private WeatherAccess WeatherService = null;
+    private Bind PhoneEventsService = null;
+    private core.services.Weather.Bind WeatherService = null;
 
     private PermissionHelper Permissions = new PermissionHelper();
     private boolean PermissionsChecked = false;
@@ -94,13 +89,13 @@ public class StartupSettings extends Activity implements PhoneEventsUpdates, Wea
 
         Intent ServiceStarter;
         // Start Service
-        ServiceStarter = new Intent(this, PhoneEventsProvider.class);
-        Log.d(LogTag, "Requesting Service ["+ PhoneEventsProvider.class.getSimpleName() +"] to start...");
+        ServiceStarter = new Intent(this, Provider.class);
+        Log.d(LogTag, "Requesting Service ["+ Provider.class.getSimpleName() +"] to start...");
         startService(ServiceStarter);
         bindService(ServiceStarter, this, 0);
 
-        ServiceStarter = new Intent(this, WeatherProvider.class);
-        Log.d(LogTag, "Requesting Service ["+ WeatherProvider.class.getSimpleName() +"] to start...");
+        ServiceStarter = new Intent(this, core.services.Weather.Provider.class);
+        Log.d(LogTag, "Requesting Service ["+ core.services.Weather.Provider.class.getSimpleName() +"] to start...");
         startService(ServiceStarter);
         bindService(ServiceStarter, this, 0);
     }
@@ -137,15 +132,15 @@ public class StartupSettings extends Activity implements PhoneEventsUpdates, Wea
         Log.d(LogTag, "Connected to " + name.getClassName() + " Service");
 
         // Connection from push Service
-        if (PhoneEventsProvider.class.getName().equals(name.getClassName())) {
-            PhoneEventsService = (PhoneEventsAccess) service;
+        if (Provider.class.getName().equals(name.getClassName())) {
+            PhoneEventsService = (Bind) service;
             PhoneEventsService.RegisterListener(this);
             PhoneEventsService.query();
         }
 
         // Connection from push Service
-        if (WeatherProvider.class.getName().equals(name.getClassName())) {
-            WeatherService = (WeatherAccess) service;
+        if (core.services.Weather.Provider.class.getName().equals(name.getClassName())) {
+            WeatherService = (core.services.Weather.Bind) service;
             WeatherService.RegisterListener(this);
             WeatherService.query();
         }
@@ -156,12 +151,12 @@ public class StartupSettings extends Activity implements PhoneEventsUpdates, Wea
         Log.d(LogTag, "Disconnected from " + name.getClassName()  + " Service");
 
         // Disconnection from push Service
-        if (PhoneEventsProvider.class.getName().equals(name.getClassName())) {
+        if (Provider.class.getName().equals(name.getClassName())) {
             PhoneEventsService = null;
         }
 
         // Disconnection from push Service
-        if (WeatherProvider.class.getName().equals(name.getClassName())) {
+        if (core.services.Weather.Provider.class.getName().equals(name.getClassName())) {
             WeatherService = null;
         }
     }
@@ -183,22 +178,22 @@ public class StartupSettings extends Activity implements PhoneEventsUpdates, Wea
         for (String key : UpdateContent.keySet()) {
 
             // Managing data from push Service
-            if (key.equals(PhoneEventsKeys.CallsID)) CallsCounter.setText(String.valueOf(UpdateContent.getInt(key)));
-            if (key.equals(PhoneEventsKeys.MessagesID)) MessagesCounter.setText(String.valueOf(UpdateContent.getInt(key)));
+            if (key.equals(Keys.CallsID)) CallsCounter.setText(String.valueOf(UpdateContent.getInt(key)));
+            if (key.equals(Keys.MessagesID)) MessagesCounter.setText(String.valueOf(UpdateContent.getInt(key)));
 
 
             // Managing data from Weather Service
-            if (key.equals(WeatherKeys.WeatherID)) {
+            if (key.equals(core.services.Weather.Keys.WeatherID)) {
                 int WeatherID = UpdateContent.getInt(key);
-                if (WeatherID == WeatherCode.SunnyID)  WeatherIcon.setImageResource(R.drawable.sunny);
-                if (WeatherID == WeatherCode.CloudyID)  WeatherIcon.setImageResource(R.drawable.cloudy);
-                if (WeatherID == WeatherCode.RainyID)  WeatherIcon.setImageResource(R.drawable.rainy);
-                if (WeatherID == WeatherCode.SunnyRainyID)  WeatherIcon.setImageResource(R.drawable.sunny_rainy);
-                if (WeatherID == WeatherCode.SunnyCloudyID)  WeatherIcon.setImageResource(R.drawable.sunny_cloudy);
-                if (WeatherID == WeatherCode.StormyID)  WeatherIcon.setImageResource(R.drawable.stormy);
-                if (WeatherID == WeatherCode.SnowyID)  WeatherIcon.setImageResource(R.drawable.snowy);
+                if (WeatherID == CodesKeys.SunnyID)  WeatherIcon.setImageResource(R.drawable.sunny);
+                if (WeatherID == CodesKeys.CloudyID)  WeatherIcon.setImageResource(R.drawable.cloudy);
+                if (WeatherID == CodesKeys.RainyID)  WeatherIcon.setImageResource(R.drawable.rainy);
+                if (WeatherID == CodesKeys.SunnyRainyID)  WeatherIcon.setImageResource(R.drawable.sunny_rainy);
+                if (WeatherID == CodesKeys.SunnyCloudyID)  WeatherIcon.setImageResource(R.drawable.sunny_cloudy);
+                if (WeatherID == CodesKeys.StormyID)  WeatherIcon.setImageResource(R.drawable.stormy);
+                if (WeatherID == CodesKeys.SnowyID)  WeatherIcon.setImageResource(R.drawable.snowy);
             }
-            if (key.equals(WeatherKeys.TemperatureID)) Temperature.setText(String.valueOf(UpdateContent.getInt(key))+"°c");
+            if (key.equals(core.services.Weather.Keys.TemperatureID)) Temperature.setText(String.valueOf(UpdateContent.getInt(key))+"°c");
         }
     }
 }
