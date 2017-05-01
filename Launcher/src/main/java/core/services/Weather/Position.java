@@ -4,15 +4,14 @@ package core.services.Weather;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.Handler;
 
-public class WeatherGPS {
+public class Position {
 
-    private WeatherMiner Listener = null;
+    private Miner Listener = null;
     private Context WeatherService = null;
     private LocationManager GPS = null;
 
-public WeatherGPS(Context Service, WeatherMiner Parent) {
+public Position(Context Service, Miner Parent) {
         Listener = Parent;
         WeatherService =  Service;
     }

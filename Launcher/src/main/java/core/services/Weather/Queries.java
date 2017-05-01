@@ -1,5 +1,5 @@
 package core.services.Weather;
 
-public interface WeatherQueries {
+public interface Queries {
     void query();
 }

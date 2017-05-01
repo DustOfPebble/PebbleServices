@@ -9,7 +9,7 @@ import android.content.IntentFilter;
 import android.os.PowerManager;
 import android.util.Log;
 
-public class WakeUpManager extends BroadcastReceiver {
+public class WakeUp extends BroadcastReceiver {
     private String LogTag = this.getClass().getSimpleName();
 
     private static int ID = 0;
@@ -26,7 +26,7 @@ public class WakeUpManager extends BroadcastReceiver {
     private Intent WakeUpEvent = null;
     private Context Service =  null;
 
-    public WakeUpManager(Context ServiceContext){
+    public WakeUp(Context ServiceContext){
         Service = ServiceContext;
         DreamBox = (PowerManager) ServiceContext.getSystemService(Service.POWER_SERVICE);
         Trigger = (AlarmManager) ServiceContext.getSystemService(Service.ALARM_SERVICE);

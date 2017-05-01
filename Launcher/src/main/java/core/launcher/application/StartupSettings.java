@@ -3,7 +3,6 @@ package core.launcher.application;
 import android.Manifest;
 import android.app.Activity;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
@@ -16,12 +15,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import core.services.PhoneEvents.PhoneEventsProvider;
-import core.services.PhoneEvents.PhoneEventsAccess;
+import core.services.PhoneEvents.PhoneEventsBind;
 import core.services.PhoneEvents.PhoneEventsUpdates;
-import core.services.PhoneEvents.PhoneEventsKeys;
-import core.services.Weather.WeatherAccess;
-import core.services.Weather.WeatherCode;
-import core.services.Weather.WeatherKeys;
+import core.services.PhoneEvents.Keys;
+import core.services.Weather.CodesKeys;
+import core.services.Weather.WeatherBind;
 import core.services.Weather.WeatherProvider;
 import core.services.Weather.WeatherUpdates;
 
@@ -37,8 +35,8 @@ public class StartupSettings extends Activity implements PhoneEventsUpdates, Wea
     private Handler ViewUpdate = new Handler(Looper.getMainLooper());
     private Bundle UpdateContent = null;
 
-    private PhoneEventsAccess PhoneEventsService = null;
-    private WeatherAccess WeatherService = null;
+    private PhoneEventsBind PhoneEventsService = null;
+    private WeatherBind WeatherService = null;
 
     private PermissionHelper Permissions = new PermissionHelper();
     private boolean PermissionsChecked = false;
@@ -138,14 +136,14 @@ public class StartupSettings extends Activity implements PhoneEventsUpdates, Wea
 
         // Connection from push Service
         if (PhoneEventsProvider.class.getName().equals(name.getClassName())) {
-            PhoneEventsService = (PhoneEventsAccess) service;
+            PhoneEventsService = (PhoneEventsBind) service;
             PhoneEventsService.RegisterListener(this);
             PhoneEventsService.query();
         }
 
         // Connection from push Service
         if (WeatherProvider.class.getName().equals(name.getClassName())) {
-            WeatherService = (WeatherAccess) service;
+            WeatherService = (WeatherBind) service;
             WeatherService.RegisterListener(this);
             WeatherService.query();
         }
@@ -183,22 +181,22 @@ public class StartupSettings extends Activity implements PhoneEventsUpdates, Wea
         for (String key : UpdateContent.keySet()) {
 
             // Managing data from push Service
-            if (key.equals(PhoneEventsKeys.CallsID)) CallsCounter.setText(String.valueOf(UpdateContent.getInt(key)));
-            if (key.equals(PhoneEventsKeys.MessagesID)) MessagesCounter.setText(String.valueOf(UpdateContent.getInt(key)));
+            if (key.equals(Keys.CallsID)) CallsCounter.setText(String.valueOf(UpdateContent.getInt(key)));
+            if (key.equals(Keys.MessagesID)) MessagesCounter.setText(String.valueOf(UpdateContent.getInt(key)));
 
 
             // Managing data from Weather Service
-            if (key.equals(WeatherKeys.WeatherID)) {
+            if (key.equals(core.services.Weather.Keys.WeatherID)) {
                 int WeatherID = UpdateContent.getInt(key);
-                if (WeatherID == WeatherCode.SunnyID)  WeatherIcon.setImageResource(R.drawable.sunny);
-                if (WeatherID == WeatherCode.CloudyID)  WeatherIcon.setImageResource(R.drawable.cloudy);
-                if (WeatherID == WeatherCode.RainyID)  WeatherIcon.setImageResource(R.drawable.rainy);
-                if (WeatherID == WeatherCode.SunnyRainyID)  WeatherIcon.setImageResource(R.drawable.sunny_rainy);
-                if (WeatherID == WeatherCode.SunnyCloudyID)  WeatherIcon.setImageResource(R.drawable.sunny_cloudy);
-                if (WeatherID == WeatherCode.StormyID)  WeatherIcon.setImageResource(R.drawable.stormy);
-                if (WeatherID == WeatherCode.SnowyID)  WeatherIcon.setImageResource(R.drawable.snowy);
+                if (WeatherID == CodesKeys.SunnyID)  WeatherIcon.setImageResource(R.drawable.sunny);
+                if (WeatherID == CodesKeys.CloudyID)  WeatherIcon.setImageResource(R.drawable.cloudy);
+                if (WeatherID == CodesKeys.RainyID)  WeatherIcon.setImageResource(R.drawable.rainy);
+                if (WeatherID == CodesKeys.SunnyRainyID)  WeatherIcon.setImageResource(R.drawable.sunny_rainy);
+                if (WeatherID == CodesKeys.SunnyCloudyID)  WeatherIcon.setImageResource(R.drawable.sunny_cloudy);
+                if (WeatherID == CodesKeys.StormyID)  WeatherIcon.setImageResource(R.drawable.stormy);
+                if (WeatherID == CodesKeys.SnowyID)  WeatherIcon.setImageResource(R.drawable.snowy);
             }
-            if (key.equals(WeatherKeys.TemperatureID)) Temperature.setText(String.valueOf(UpdateContent.getInt(key))+"°c");
+            if (key.equals(core.services.Weather.Keys.TemperatureID)) Temperature.setText(String.valueOf(UpdateContent.getInt(key))+"°c");
         }
     }
 }

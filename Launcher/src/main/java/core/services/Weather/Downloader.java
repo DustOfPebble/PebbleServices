@@ -7,21 +7,21 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class WeatherDownloader extends Thread  {
+public class Downloader extends Thread  {
     private String LogTag = this.getClass().getSimpleName();
 
     static private  String Server = "api.openweathermap.org";
     static private  String Command = "/data/2.5/weather?";
     static private  String KeyAPI ="3d28c03d7fb2f5f4b4b7bc98367cc2cd";
 
-    private WeatherMiner Listener = null;
+    private Miner Listener = null;
 
     private String WeatherURL = null;
 
 
     private int maxLength = 10000; // in Bytes
 
-    public WeatherDownloader(WeatherMiner Parent) {
+    public Downloader(Miner Parent) {
         Listener = Parent;
     }
 

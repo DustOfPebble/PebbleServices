@@ -7,19 +7,19 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class WeatherMiner  {
+public class Miner {
 
     private String LogTag = this.getClass().getSimpleName();
 
     private WeatherProvider Listener;
-    private WeatherGPS GPS = null;
-    private WeatherDownloader Downloader = null;
+    private Position GPS = null;
+    private core.services.Weather.Downloader Downloader = null;
 
     private static boolean isRunning = false;
 
-    public WeatherMiner(WeatherProvider Parent) {
+    public Miner(WeatherProvider Parent) {
         Listener = Parent;
-        GPS = new WeatherGPS(Listener, this);
+        GPS = new Position(Listener, this);
     }
 
     public void start() {
@@ -29,21 +29,21 @@ public class WeatherMiner  {
     }
 
     private int ID(String Code) {
-        if  (WeatherCode.Sunny.equals(Code)) return WeatherCode.SunnyID;
-        if  (WeatherCode.SunnyCloudy.equals(Code)) return WeatherCode.SunnyCloudyID;
-        if  (WeatherCode.Cloudy.equals(Code)) return WeatherCode.CloudyID;
-        if  (WeatherCode.HeavyCloudy.equals(Code)) return WeatherCode.HeavyCloudyID;
-        if  (WeatherCode.Rainy.equals(Code)) return WeatherCode.RainyID;
-        if  (WeatherCode.SunnyRainy.equals(Code)) return WeatherCode.SunnyRainyID;
-        if  (WeatherCode.Stormy.equals(Code)) return WeatherCode.StormyID;
-        if  (WeatherCode.Snowy .equals(Code)) return WeatherCode.SnowyID;
+        if  (CodesKeys.Sunny.equals(Code)) return CodesKeys.SunnyID;
+        if  (CodesKeys.SunnyCloudy.equals(Code)) return CodesKeys.SunnyCloudyID;
+        if  (CodesKeys.Cloudy.equals(Code)) return CodesKeys.CloudyID;
+        if  (CodesKeys.HeavyCloudy.equals(Code)) return CodesKeys.HeavyCloudyID;
+        if  (CodesKeys.Rainy.equals(Code)) return CodesKeys.RainyID;
+        if  (CodesKeys.SunnyRainy.equals(Code)) return CodesKeys.SunnyRainyID;
+        if  (CodesKeys.Stormy.equals(Code)) return CodesKeys.StormyID;
+        if  (CodesKeys.Snowy .equals(Code)) return CodesKeys.SnowyID;
         return 0;
     }
     /**************************************************************
      *  Callbacks implementation from Workers
      **************************************************************/
     public void UpdateGPS(double Longitude, double Latitude) {
-        Downloader = new WeatherDownloader(this);
+        Downloader = new Downloader(this);
         String Query = Downloader.setLocation(Longitude, Latitude);
         Downloader.start(Query);
     }
@@ -70,8 +70,8 @@ public class WeatherMiner  {
             Temperature = (int)(Kelvin - 273.15);
 
             Bundle WeatherInfo = new Bundle();
-            WeatherInfo.putInt(WeatherKeys.WeatherID, WeatherID);
-            WeatherInfo.putInt(WeatherKeys.TemperatureID, Temperature);
+            WeatherInfo.putInt(Keys.WeatherID, WeatherID);
+            WeatherInfo.putInt(Keys.TemperatureID, Temperature);
             Listener.Update(WeatherInfo);
 
         } catch (Exception Error) {

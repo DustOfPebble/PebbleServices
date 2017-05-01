@@ -5,13 +5,13 @@ import android.net.ConnectivityManager;
 import android.net.ConnectivityManager.OnNetworkActiveListener;
 import android.net.NetworkInfo;
 
-public class NetworkEvents implements OnNetworkActiveListener {
+public class Network implements OnNetworkActiveListener {
 
     private String LogTag = this.getClass().getSimpleName();
-    private  WeatherProvider Service = null;
+    private WeatherProvider Service = null;
     private ConnectivityManager Connectivity = null;
 
-    public NetworkEvents(WeatherProvider Service) {
+    public Network(WeatherProvider Service) {
         this.Service = Service;
         Connectivity = (ConnectivityManager) Service.getSystemService(Context.CONNECTIVITY_SERVICE);
         Connectivity.addDefaultNetworkActiveListener(this);
