@@ -10,7 +10,7 @@ import android.os.PowerManager;
 import android.util.Log;
 
 public class WakeUp extends BroadcastReceiver {
-    private String LogTag = this.getClass().getSimpleName();
+    private static final String LogTag = WakeUp.class.getSimpleName();
 
     private static int ID = 0;
     private static final String WakeUpService = "Weather";

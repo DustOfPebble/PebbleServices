@@ -16,8 +16,8 @@ import lib.smartwatch.SmartwatchEvents;
 import lib.smartwatch.SmartwatchManager;
 
 public class WeatherProvider extends Service implements Queries, SmartwatchEvents {
+    private static final String LogTag = WeatherProvider.class.getSimpleName();
 
-    private String LogTag = this.getClass().getSimpleName();
     private boolean isRunning;
     private boolean isWaitingConnectivity;
 

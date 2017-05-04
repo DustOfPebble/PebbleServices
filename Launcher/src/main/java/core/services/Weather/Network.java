@@ -7,7 +7,7 @@ import android.net.NetworkInfo;
 
 public class Network implements OnNetworkActiveListener {
 
-    private String LogTag = this.getClass().getSimpleName();
+    private static final String LogTag = Network.class.getSimpleName();
     private WeatherProvider Service = null;
     private ConnectivityManager Connectivity = null;
 

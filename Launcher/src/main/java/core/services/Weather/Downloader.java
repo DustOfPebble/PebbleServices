@@ -8,7 +8,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class Downloader extends Thread  {
-    private String LogTag = this.getClass().getSimpleName();
+    private static final String LogTag = Downloader.class.getSimpleName();
 
     static private  String Server = "api.openweathermap.org";
     static private  String Command = "/data/2.5/weather?";
@@ -34,6 +34,7 @@ public class Downloader extends Thread  {
         Query +=  Command;
         Query += "lat="+String.valueOf(Latitude)+ "&lon="+String.valueOf(Longitude);
         Query += "&appid="+KeyAPI;
+        Log.d(LogTag,"Download :["+Query+"]");
         return  Query;
     }
 

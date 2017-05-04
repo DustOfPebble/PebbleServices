@@ -6,7 +6,7 @@ import android.util.Log;
 
 public class PhoneEventsBind extends Binder {
 
-    private String LogTag = this.getClass().getSimpleName();
+    private String LogTag = PhoneEventsBind.class.getSimpleName();
 
     private Queries Provider = null;
     private PhoneEventsUpdates Listener = null;

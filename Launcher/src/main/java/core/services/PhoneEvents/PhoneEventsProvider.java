@@ -13,7 +13,7 @@ import lib.smartwatch.SmartwatchManager;
 
 public class PhoneEventsProvider extends Service implements Queries, SmartwatchEvents {
 
-    private String LogTag = this.getClass().getSimpleName();
+    private static final String LogTag = PhoneEventsProvider.class.getSimpleName();
 
     private SmartwatchManager WatchConnector = null;
     private PhoneEventsBind Connector=null;

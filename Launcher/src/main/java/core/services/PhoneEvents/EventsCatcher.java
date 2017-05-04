@@ -10,7 +10,7 @@ import android.util.Log;
 
 public class EventsCatcher extends BroadcastReceiver {
 
-    private String LogTag = this.getClass().getSimpleName();
+    private static final String LogTag = EventsCatcher.class.getSimpleName();
 
     private static final String SMS = "android.provider.Telephony.SMS_RECEIVED";
     private static final String CALL = "android.intent.action.PHONE_STATE";

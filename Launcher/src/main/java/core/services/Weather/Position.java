@@ -7,6 +7,8 @@ import android.location.LocationManager;
 
 public class Position {
 
+    private static final String LogTag = Position.class.getSimpleName();
+
     private Miner Listener = null;
     private Context WeatherService = null;
     private LocationManager GPS = null;

@@ -13,7 +13,7 @@ import java.util.UUID;
 
 public class SmartwatchManager extends BroadcastReceiver {
 
-    private String LogTag = this.getClass().getSimpleName();
+    static final private String LogTag = SmartwatchManager.class.getSimpleName();
 
     private UUID Identifier;
     private Context SavedContext;

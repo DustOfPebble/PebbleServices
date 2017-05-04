@@ -8,12 +8,12 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class Miner {
-
-    private String LogTag = this.getClass().getSimpleName();
+    private static final String LogTag = Miner.class.getSimpleName();
 
     private WeatherProvider Listener;
     private Position GPS = null;
     private core.services.Weather.Downloader Downloader = null;
+    private CodesKeys IconOf = new CodesKeys();
 
     private static boolean isRunning = false;
 
@@ -28,17 +28,7 @@ public class Miner {
         GPS.update();
     }
 
-    private int ID(String Code) {
-        if  (CodesKeys.Sunny.equals(Code)) return CodesKeys.SunnyID;
-        if  (CodesKeys.SunnyCloudy.equals(Code)) return CodesKeys.SunnyCloudyID;
-        if  (CodesKeys.Cloudy.equals(Code)) return CodesKeys.CloudyID;
-        if  (CodesKeys.HeavyCloudy.equals(Code)) return CodesKeys.HeavyCloudyID;
-        if  (CodesKeys.Rainy.equals(Code)) return CodesKeys.RainyID;
-        if  (CodesKeys.SunnyRainy.equals(Code)) return CodesKeys.SunnyRainyID;
-        if  (CodesKeys.Stormy.equals(Code)) return CodesKeys.StormyID;
-        if  (CodesKeys.Snowy .equals(Code)) return CodesKeys.SnowyID;
-        return 0;
-    }
+    private int ID(String Code) { return IconOf.Code(Code); }
     /**************************************************************
      *  Callbacks implementation from Workers
      **************************************************************/

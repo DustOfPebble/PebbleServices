@@ -6,7 +6,7 @@ import android.util.Log;
 
 public class WeatherBind extends Binder {
 
-    private String LogTag = this.getClass().getSimpleName();
+    private static final String LogTag = WeatherBind.class.getSimpleName();
 
     private Queries Provider = null;
     private WeatherUpdates Listener = null;

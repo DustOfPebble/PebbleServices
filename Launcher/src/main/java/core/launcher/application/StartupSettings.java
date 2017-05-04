@@ -14,6 +14,9 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import core.services.PhoneEvents.PhoneEventsProvider;
 import core.services.PhoneEvents.PhoneEventsBind;
 import core.services.PhoneEvents.PhoneEventsUpdates;
@@ -25,7 +28,19 @@ import core.services.Weather.WeatherUpdates;
 
 public class StartupSettings extends Activity implements PhoneEventsUpdates, WeatherUpdates,ServiceConnection, Runnable {
 
-    private String LogTag = this.getClass().getSimpleName();
+    private static final String LogTag = StartupSettings.class.getSimpleName();
+
+    private static final Map<Integer,Integer> IconsOf = new HashMap<Integer,Integer>() {{
+        put(CodesKeys.NoWeatherID, R.drawable.no_weather);
+        put(CodesKeys.SunnyID,R.drawable.sunny);
+        put(CodesKeys.CloudyID,R.drawable.cloudy);
+        put(CodesKeys.RainyID,R.drawable.rainy);
+        put(CodesKeys.SunnyRainyID,R.drawable.sunny_rainy);
+        put(CodesKeys.SunnyCloudyID,R.drawable.sunny_cloudy);
+        put(CodesKeys.StormyID,R.drawable.stormy);
+        put(CodesKeys.SnowyID,R.drawable.snowy);
+        put(CodesKeys.FoggyID, R.drawable.foggy);
+    }};
 
     private TextView CallsCounter = null;
     private TextView MessagesCounter = null;
@@ -184,18 +199,8 @@ public class StartupSettings extends Activity implements PhoneEventsUpdates, Wea
             if (key.equals(Keys.CallsID)) CallsCounter.setText(String.valueOf(UpdateContent.getInt(key)));
             if (key.equals(Keys.MessagesID)) MessagesCounter.setText(String.valueOf(UpdateContent.getInt(key)));
 
-
             // Managing data from Weather Service
-            if (key.equals(core.services.Weather.Keys.WeatherID)) {
-                int WeatherID = UpdateContent.getInt(key);
-                if (WeatherID == CodesKeys.SunnyID)  WeatherIcon.setImageResource(R.drawable.sunny);
-                if (WeatherID == CodesKeys.CloudyID)  WeatherIcon.setImageResource(R.drawable.cloudy);
-                if (WeatherID == CodesKeys.RainyID)  WeatherIcon.setImageResource(R.drawable.rainy);
-                if (WeatherID == CodesKeys.SunnyRainyID)  WeatherIcon.setImageResource(R.drawable.sunny_rainy);
-                if (WeatherID == CodesKeys.SunnyCloudyID)  WeatherIcon.setImageResource(R.drawable.sunny_cloudy);
-                if (WeatherID == CodesKeys.StormyID)  WeatherIcon.setImageResource(R.drawable.stormy);
-                if (WeatherID == CodesKeys.SnowyID)  WeatherIcon.setImageResource(R.drawable.snowy);
-            }
+            if (key.equals(core.services.Weather.Keys.WeatherID)) WeatherIcon.setImageResource(IconsOf.get(UpdateContent.getInt(key)));
             if (key.equals(core.services.Weather.Keys.TemperatureID)) Temperature.setText(String.valueOf(UpdateContent.getInt(key))+"°c");
         }
     }
