@@ -27,13 +27,13 @@
         <service
             android:description="@string/ServicePhoneEvents"
             android:label="@string/ServicePhoneEventsName"
-            android:name="core.services.PhoneEvents.PhoneEventsProvider"
+            android:name="core.services.PhoneEventsProvider"
             android:exported="true"
             />
         <service
             android:description="@string/ServiceWeather"
             android:label="@string/ServiceWeatherName"
-            android:name="core.services.Weather.WeatherProvider"
+            android:name="core.services.Hub"
             android:exported="true"
             />
     </application>

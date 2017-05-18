@@ -1,4 +1,4 @@
-package core.services.Weather;
+package core.services;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -11,30 +11,38 @@ import android.util.Log;
 
 import core.launcher.application.R;
 import core.launcher.application.SmartwatchConstants;
+import core.services.PhoneEvents.EventsCatcher;
+import core.services.PhoneEvents.PhoneKeys;
+import core.services.Weather.WeatherKeys;
+import core.services.Weather.Miner;
+import core.services.Weather.Network;
+import core.services.Weather.WakeUp;
 import lib.smartwatch.SmartwatchBundle;
 import lib.smartwatch.SmartwatchEvents;
 import lib.smartwatch.SmartwatchManager;
 
-public class WeatherProvider extends Service implements Queries, SmartwatchEvents {
-    private static final String LogTag = WeatherProvider.class.getSimpleName();
+public class Hub extends Service implements Queries, SmartwatchEvents {
+    private static final String LogTag = Hub.class.getSimpleName();
 
     private boolean isRunning;
     private boolean isWaitingConnectivity;
 
     private SmartwatchManager WatchConnector = null;
-    private WeatherBind Connector = null;
+    private Junction Connector = null;
+
     private Network AccessNetwork = null;
-
-    private core.services.Weather.Miner Miner = null;
-
-    private core.services.Weather.WakeUp WakeUp = null;
+    private Miner DataMiner = null;
+    private WakeUp WakeUp = null;
     private long SleepDelay = 20*60*1000; // in ms
     private long NextUpdateTimeStamps = 0;
 
+    private EventsCatcher PhoneEvents = null;
+
+
     private final int ID = R.string.ServiceWeather;
 
-    public WeatherProvider(){
-        Connector = new WeatherBind();
+    public Hub(){
+        Connector = new Junction();
         isRunning = false;
     }
 
@@ -42,16 +50,22 @@ public class WeatherProvider extends Service implements Queries, SmartwatchEvent
         SmartwatchBundle WatchSet = new SmartwatchBundle();
         for (String key : Snapshot.keySet()) {
             // Managing data from Weather Service
-            if (key.equals(Keys.WeatherID))
+            if (key.equals(WeatherKeys.WeatherID))
                 WatchSet.update(SmartwatchConstants.WeatherSkyNow, (byte) Snapshot.getInt(key), false);
-            if (key.equals(Keys.TemperatureID))
+            if (key.equals(WeatherKeys.TemperatureID))
                 WatchSet.update(SmartwatchConstants.WeatherTemperatureNow, (byte) Snapshot.getInt(key), true);
-            if (key.equals(Keys.TemperatureMaxID))
+            if (key.equals(WeatherKeys.TemperatureMaxID))
                 WatchSet.update(SmartwatchConstants.WeatherTemperatureMax, (byte) Snapshot.getInt(key), true);
-            if (key.equals(Keys.TemperatureMinID))
+            if (key.equals(WeatherKeys.TemperatureMinID))
                 WatchSet.update(SmartwatchConstants.WeatherTemperatureMin, (byte) Snapshot.getInt(key), true);
-            if (key.equals(Keys.LocationNameID))
+            if (key.equals(WeatherKeys.LocationNameID))
                 WatchSet.update(SmartwatchConstants.WeatherLocationName, Snapshot.getString(key));
+
+            if (key.equals(PhoneKeys.CallsID))
+                WatchSet.update(SmartwatchConstants.CallsCount, (byte) Snapshot.getInt(key), false);
+            if (key.equals(PhoneKeys.MessagesID))
+                WatchSet.update(SmartwatchConstants.MessagesCount, (byte) Snapshot.getInt(key), false);
+
         }
         return WatchSet;
     }
@@ -70,7 +84,7 @@ public class WeatherProvider extends Service implements Queries, SmartwatchEvent
     public void Enabled() {
         if (!isWaitingConnectivity) return;
         Log.d(LogTag, "Connectivity enabled --> Updating");
-        Miner.start();
+        DataMiner.start();
     }
 
     /**************************************************************
@@ -104,12 +118,15 @@ public class WeatherProvider extends Service implements Queries, SmartwatchEvent
         AccessNetwork = new Network(this);
 
         Connector.RegisterProvider(this);
-        Miner = new Miner(this);
+        DataMiner = new Miner(this);
         WakeUp = new WakeUp(this);
         isRunning = false;
         isWaitingConnectivity = false;
         NextUpdateTimeStamps =  System.currentTimeMillis() + SleepDelay;
         WakeUp.setNext(SleepDelay);
+
+        PhoneEvents = new EventsCatcher();
+        PhoneEvents.enableReceiver(getBaseContext());
     }
 
     @Override
@@ -127,7 +144,7 @@ public class WeatherProvider extends Service implements Queries, SmartwatchEvent
         isWaitingConnectivity = false;
         if (AccessNetwork.isConnected()) {
             Log.d(LogTag, "Service started with connectivity enabled ==> Updating");
-            Miner.start();
+            DataMiner.start();
         }
 
         return START_STICKY;
@@ -150,8 +167,9 @@ public class WeatherProvider extends Service implements Queries, SmartwatchEvent
      **************************************************************/
     @Override
     public void query() {
-        if (AccessNetwork.isConnected()) { Miner.start(); return;}
+        if (AccessNetwork.isConnected()) { DataMiner.start(); return;}
         isWaitingConnectivity =  true;
+        Connector.push(PhoneEvents.History());
     }
 
     /**************************************************************
@@ -159,14 +177,15 @@ public class WeatherProvider extends Service implements Queries, SmartwatchEvent
      **************************************************************/
     @Override
     public void ConnectedStateChanged() {
-        if (!WatchConnector.isConnected()) return;
-
-        if (AccessNetwork.isConnected()) {
-            Miner.start();
-            return;
+        if (!WatchConnector.isConnected()) PhoneEvents.resetCount();
+        else {
+            Connector.push(PhoneEvents.History());
+            Log.d(LogTag, "Pushing --> Smartwatch");
+            WatchConnector.send(make(PhoneEvents.History()));
         }
 
-        isWaitingConnectivity =  true;
+        if (AccessNetwork.isConnected()) DataMiner.start();
+        else isWaitingConnectivity =  true;
     }
 
     @Override

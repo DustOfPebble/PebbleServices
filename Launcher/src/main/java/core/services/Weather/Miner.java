@@ -7,17 +7,19 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import core.services.Hub;
+
 public class Miner {
     private static final String LogTag = Miner.class.getSimpleName();
 
-    private WeatherProvider Listener;
+    private Hub Listener;
     private Position GPS = null;
     private core.services.Weather.Downloader Downloader = null;
     private CodesKeys IconOf = new CodesKeys();
 
     private static boolean isRunning = false;
 
-    public Miner(WeatherProvider Parent) {
+    public Miner(Hub Parent) {
         Listener = Parent;
         GPS = new Position(Listener, this);
     }
@@ -60,8 +62,8 @@ public class Miner {
             Temperature = (int)(Kelvin - 273.15);
 
             Bundle WeatherInfo = new Bundle();
-            WeatherInfo.putInt(Keys.WeatherID, WeatherID);
-            WeatherInfo.putInt(Keys.TemperatureID, Temperature);
+            WeatherInfo.putInt(WeatherKeys.WeatherID, WeatherID);
+            WeatherInfo.putInt(WeatherKeys.TemperatureID, Temperature);
             Listener.Update(WeatherInfo);
 
         } catch (Exception Error) {

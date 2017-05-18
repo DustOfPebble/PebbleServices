@@ -1,7 +1,7 @@
-package core.services.Weather;
+package core.services;
 
 import android.os.Bundle;
 
-public interface WeatherUpdates {
+public interface Signals {
     void push(Bundle UpdateSnapshot);
 }

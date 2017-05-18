@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import core.services.Hub;
+
 public class EventsCatcher extends BroadcastReceiver {
 
     private static final String LogTag = EventsCatcher.class.getSimpleName();
@@ -15,18 +17,17 @@ public class EventsCatcher extends BroadcastReceiver {
     private static final String SMS = "android.provider.Telephony.SMS_RECEIVED";
     private static final String CALL = "android.intent.action.PHONE_STATE";
 
-    private PhoneEventsProvider EventManager;
     private IntentFilter EventFilters = new IntentFilter();
 
     private int MissedCallsCount = 0;
     private int MissedMessagesCount = 0;
+    private Bundle PhoneInfos = null;
 
     private boolean hasRing = false;
     private boolean hasPickUp = false;
 
 
-    public EventsCatcher(PhoneEventsProvider Listener ) {
-        EventManager = Listener;
+    public EventsCatcher() {
         EventFilters.addAction(SMS);
         EventFilters.addAction(CALL);
     }
@@ -34,6 +35,8 @@ public class EventsCatcher extends BroadcastReceiver {
     public void enableReceiver(Context ServiceContext) {
         ServiceContext.registerReceiver(this, EventFilters);
     }
+
+    public Bundle History() {return PhoneInfos;}
 
     public void resetCount() {
         MissedCallsCount = 0;
@@ -75,10 +78,9 @@ public class EventsCatcher extends BroadcastReceiver {
                 hasPickUp = false;
             }
 
-            Bundle PhoneInfos = new Bundle();
-            PhoneInfos.putInt(Keys.MessagesID, MissedMessagesCount);
-            PhoneInfos.putInt(Keys.CallsID, MissedCallsCount);
-            EventManager.Update(PhoneInfos);
+            PhoneInfos = new Bundle();
+            PhoneInfos.putInt(PhoneKeys.MessagesID, MissedMessagesCount);
+            PhoneInfos.putInt(PhoneKeys.CallsID, MissedCallsCount);
         }
     }
 }

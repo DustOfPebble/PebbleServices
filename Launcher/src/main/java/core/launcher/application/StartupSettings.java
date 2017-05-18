@@ -14,33 +14,18 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.HashMap;
 import java.util.Map;
 
-import core.services.PhoneEvents.PhoneEventsProvider;
-import core.services.PhoneEvents.PhoneEventsBind;
-import core.services.PhoneEvents.PhoneEventsUpdates;
-import core.services.PhoneEvents.Keys;
-import core.services.Weather.CodesKeys;
-import core.services.Weather.WeatherBind;
-import core.services.Weather.WeatherProvider;
-import core.services.Weather.WeatherUpdates;
+import core.services.PhoneEvents.PhoneKeys;
+import core.services.Junction;
+import core.services.Hub;
+import core.services.Signals;
+import core.services.Weather.WeatherKeys;
 
-public class StartupSettings extends Activity implements PhoneEventsUpdates, WeatherUpdates,ServiceConnection, Runnable {
+public class StartupSettings extends Activity implements Signals,ServiceConnection, Runnable {
 
     private static final String LogTag = StartupSettings.class.getSimpleName();
-
-    private static final Map<Integer,Integer> IconsOf = new HashMap<Integer,Integer>() {{
-        put(CodesKeys.NoWeatherID, R.drawable.no_weather);
-        put(CodesKeys.SunnyID,R.drawable.sunny);
-        put(CodesKeys.CloudyID,R.drawable.cloudy);
-        put(CodesKeys.RainyID,R.drawable.rainy);
-        put(CodesKeys.SunnyRainyID,R.drawable.sunny_rainy);
-        put(CodesKeys.SunnyCloudyID,R.drawable.sunny_cloudy);
-        put(CodesKeys.StormyID,R.drawable.stormy);
-        put(CodesKeys.SnowyID,R.drawable.snowy);
-        put(CodesKeys.FoggyID, R.drawable.foggy);
-    }};
+    private static final Map<Integer,Integer> IconsOf = new Icons();
 
     private TextView CallsCounter = null;
     private TextView MessagesCounter = null;
@@ -50,8 +35,7 @@ public class StartupSettings extends Activity implements PhoneEventsUpdates, Wea
     private Handler ViewUpdate = new Handler(Looper.getMainLooper());
     private Bundle UpdateContent = null;
 
-    private PhoneEventsBind PhoneEventsService = null;
-    private WeatherBind WeatherService = null;
+    private Junction LiveService = null;
 
     private PermissionHelper Permissions = new PermissionHelper();
     private boolean PermissionsChecked = false;
@@ -96,8 +80,7 @@ public class StartupSettings extends Activity implements PhoneEventsUpdates, Wea
     @Override
     protected void onPause() {
         super.onPause();
-        if (PhoneEventsService == null) return;
-        if (WeatherService == null) return;
+        if (LiveService == null) return;
         unbindService(this);
         Log.d(LogTag, "Closing connection with Services ...");
     }
@@ -107,13 +90,8 @@ public class StartupSettings extends Activity implements PhoneEventsUpdates, Wea
 
         Intent ServiceStarter;
         // Start Service
-        ServiceStarter = new Intent(this, PhoneEventsProvider.class);
-        Log.d(LogTag, "Requesting Service ["+ PhoneEventsProvider.class.getSimpleName() +"] to start...");
-        startService(ServiceStarter);
-        bindService(ServiceStarter, this, 0);
-
-        ServiceStarter = new Intent(this, WeatherProvider.class);
-        Log.d(LogTag, "Requesting Service ["+ WeatherProvider.class.getSimpleName() +"] to start...");
+        ServiceStarter = new Intent(this, Hub.class);
+        Log.d(LogTag, "Requesting Service ["+ Hub.class.getSimpleName() +"] to start...");
         startService(ServiceStarter);
         bindService(ServiceStarter, this, 0);
     }
@@ -149,18 +127,11 @@ public class StartupSettings extends Activity implements PhoneEventsUpdates, Wea
     public void onServiceConnected(ComponentName name, IBinder service) {
         Log.d(LogTag, "Connected to " + name.getClassName() + " Service");
 
-        // Connection from push Service
-        if (PhoneEventsProvider.class.getName().equals(name.getClassName())) {
-            PhoneEventsService = (PhoneEventsBind) service;
-            PhoneEventsService.RegisterListener(this);
-            PhoneEventsService.query();
-        }
-
-        // Connection from push Service
-        if (WeatherProvider.class.getName().equals(name.getClassName())) {
-            WeatherService = (WeatherBind) service;
-            WeatherService.RegisterListener(this);
-            WeatherService.query();
+         // Connection from push Service
+        if (Hub.class.getName().equals(name.getClassName())) {
+            LiveService = (Junction) service;
+            LiveService.RegisterListener(this);
+            LiveService.query();
         }
     }
 
@@ -169,13 +140,8 @@ public class StartupSettings extends Activity implements PhoneEventsUpdates, Wea
         Log.d(LogTag, "Disconnected from " + name.getClassName()  + " Service");
 
         // Disconnection from push Service
-        if (PhoneEventsProvider.class.getName().equals(name.getClassName())) {
-            PhoneEventsService = null;
-        }
-
-        // Disconnection from push Service
-        if (WeatherProvider.class.getName().equals(name.getClassName())) {
-            WeatherService = null;
+        if (Hub.class.getName().equals(name.getClassName())) {
+            LiveService = null;
         }
     }
 
@@ -196,12 +162,12 @@ public class StartupSettings extends Activity implements PhoneEventsUpdates, Wea
         for (String key : UpdateContent.keySet()) {
 
             // Managing data from push Service
-            if (key.equals(Keys.CallsID)) CallsCounter.setText(String.valueOf(UpdateContent.getInt(key)));
-            if (key.equals(Keys.MessagesID)) MessagesCounter.setText(String.valueOf(UpdateContent.getInt(key)));
+            if (key.equals(PhoneKeys.CallsID)) CallsCounter.setText(String.valueOf(UpdateContent.getInt(key)));
+            if (key.equals(PhoneKeys.MessagesID)) MessagesCounter.setText(String.valueOf(UpdateContent.getInt(key)));
 
             // Managing data from Weather Service
-            if (key.equals(core.services.Weather.Keys.WeatherID)) WeatherIcon.setImageResource(IconsOf.get(UpdateContent.getInt(key)));
-            if (key.equals(core.services.Weather.Keys.TemperatureID)) Temperature.setText(String.valueOf(UpdateContent.getInt(key))+"°c");
+            if (key.equals(WeatherKeys.WeatherID)) WeatherIcon.setImageResource(IconsOf.get(UpdateContent.getInt(key)));
+            if (key.equals(WeatherKeys.TemperatureID)) Temperature.setText(String.valueOf(UpdateContent.getInt(key))+"°c");
         }
     }
 }

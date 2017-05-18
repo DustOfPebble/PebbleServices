@@ -9,6 +9,8 @@ import android.content.IntentFilter;
 import android.os.PowerManager;
 import android.util.Log;
 
+import core.services.Hub;
+
 public class WakeUp extends BroadcastReceiver {
     private static final String LogTag = WakeUp.class.getSimpleName();
 
@@ -32,7 +34,7 @@ public class WakeUp extends BroadcastReceiver {
         Trigger = (AlarmManager) ServiceContext.getSystemService(Service.ALARM_SERVICE);
         StayAwake = DreamBox.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, Coffee);
 
-        ServiceStarter = new Intent(ServiceContext, WeatherProvider.class);
+        ServiceStarter = new Intent(ServiceContext, Hub.class);
 
         WakeUpFilter  = new IntentFilter();
         WakeUpFilter.addAction(WakeUpService);
@@ -57,6 +59,6 @@ public class WakeUp extends BroadcastReceiver {
         if (!WakeUpService.equals(intent.getAction())) return;
         StayAwake.acquire(LifeTime);
         context.startService(ServiceStarter);
-        Log.d(LogTag, "Waking Up Service ["+ WeatherProvider.class.getSimpleName() +"]");
+        Log.d(LogTag, "Waking Up Service ["+ Hub.class.getSimpleName() +"]");
     }
 }
