@@ -2,6 +2,7 @@ package core.services;
 
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,8 +10,8 @@ import android.os.IBinder;
 
 import android.util.Log;
 
-import core.launcher.application.R;
-import core.launcher.application.SmartwatchConstants;
+import core.launcher.pebble.R;
+import core.launcher.pebble.SmartwatchConstants;
 import core.services.PhoneEvents.EventsCatcher;
 import core.services.PhoneEvents.PhoneKeys;
 import core.services.Weather.WeatherKeys;
@@ -38,6 +39,7 @@ public class Hub extends Service implements Queries, SmartwatchEvents {
 
     private EventsCatcher PhoneEvents = null;
 
+    private Intent ClassCallback = null;
 
     private final int ID = R.string.ServiceWeather;
 
@@ -72,9 +74,11 @@ public class Hub extends Service implements Queries, SmartwatchEvents {
 
     private void pushNotification(String Message){
         NotificationManager MessageSender = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        PendingIntent IntentCallBack = PendingIntent.getActivity(this,0, ClassCallback,PendingIntent.FLAG_UPDATE_CURRENT);
         Notification.Builder MessageFactory = new Notification.Builder(this)
                 .setSmallIcon(R.mipmap.launcher)
-                .setContentTitle(Message);
+                .setContentTitle(Message)
+                .setContentIntent(IntentCallBack);
         MessageSender.notify(ID,MessageFactory.build());
     }
 
@@ -172,6 +176,10 @@ public class Hub extends Service implements Queries, SmartwatchEvents {
         Connector.push(PhoneEvents.History());
     }
 
+    @Override
+    public void setNotificationCallback(Intent ActivityCallback){
+        ClassCallback = ActivityCallback;
+    }
     /**************************************************************
      *  Callbacks implementation Smartwatch connection state
      **************************************************************/

@@ -1,4 +1,4 @@
-package core.launcher.application;
+package core.launcher.pebble;
 
 import java.util.ArrayList;
 

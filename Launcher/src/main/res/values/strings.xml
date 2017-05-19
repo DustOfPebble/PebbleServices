@@ -8,11 +8,8 @@
     <string name="MissedMessages">Messages count</string>
     <string name="Temperature">Temperature</string>
 
-    <string name="ServicePhoneEvents">Monitoring missed events while Pebble is disconnected</string>
-    <string name="ServicePhoneEventsName">Calls and Messages</string>
-
-    <string name="ServiceWeather">Update Weather forecast from OpenWeatherMap</string>
-    <string name="ServiceWeatherName">Weather and Forecast</string>
+    <string name="Service">Weather forecast, missed Calls and SMS on Pebble.</string>
+    <string name="ServiceName">Pebble Extension Services</string>
 </resources>
 
 

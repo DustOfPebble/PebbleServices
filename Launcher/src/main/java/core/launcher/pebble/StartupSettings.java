@@ -1,4 +1,4 @@
-package core.launcher.application;
+package core.launcher.pebble;
 
 import android.Manifest;
 import android.app.Activity;
@@ -69,6 +69,7 @@ public class StartupSettings extends Activity implements Signals,ServiceConnecti
         String[] NotGrantedPermissions = Permissions.NotGranted();
         if (NotGrantedPermissions.length > 0) requestPermissions(NotGrantedPermissions,0);
         else PermissionsChecked = true;
+
     }
 
     @Override
@@ -91,6 +92,7 @@ public class StartupSettings extends Activity implements Signals,ServiceConnecti
         Intent ServiceStarter;
         // Start Service
         ServiceStarter = new Intent(this, Hub.class);
+
         Log.d(LogTag, "Requesting Service ["+ Hub.class.getSimpleName() +"] to start...");
         startService(ServiceStarter);
         bindService(ServiceStarter, this, 0);
@@ -132,6 +134,9 @@ public class StartupSettings extends Activity implements Signals,ServiceConnecti
             LiveService = (Junction) service;
             LiveService.RegisterListener(this);
             LiveService.query();
+
+            Intent ActivityCallBack = new Intent(this, StartupSettings.class);
+            LiveService.setNotificationCallback(ActivityCallBack);
         }
     }
 

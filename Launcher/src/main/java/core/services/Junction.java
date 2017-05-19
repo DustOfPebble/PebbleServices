@@ -1,5 +1,6 @@
 package core.services;
 
+import android.content.Intent;
 import android.os.Binder;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +16,7 @@ public class Junction extends Binder {
     public void RegisterListener(Signals Listener) { this.Listener = Listener; }
 
     public void query() { Provider.query(); }
+    public void setNotificationCallback(Intent ActivityCallback){ Provider.setNotificationCallback(ActivityCallback); }
 
     public void push(Bundle UpdateSnapshot) {
         try { Listener.push(UpdateSnapshot);}

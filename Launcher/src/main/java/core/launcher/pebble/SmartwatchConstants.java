@@ -1,4 +1,4 @@
-package core.launcher.application;
+package core.launcher.pebble;
 
 /********************************************************************
  * Constants used to create dictionnary for sending to Smartwatch

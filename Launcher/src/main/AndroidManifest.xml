@@ -1,4 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="core.launcher.application">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="core.launcher.pebble">
     <uses-permission android:name="android.permission.RECEIVE_SMS"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -15,7 +15,7 @@
         android:theme="@style/AppTheme"
     >
         <activity
-            android:name="core.launcher.application.StartupSettings"
+            android:name="core.launcher.pebble.StartupSettings"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleInstance"
             >
@@ -25,14 +25,8 @@
             </intent-filter>
         </activity>
         <service
-            android:description="@string/ServicePhoneEvents"
-            android:label="@string/ServicePhoneEventsName"
-            android:name="core.services.PhoneEventsProvider"
-            android:exported="true"
-            />
-        <service
-            android:description="@string/ServiceWeather"
-            android:label="@string/ServiceWeatherName"
+            android:description="@string/Service"
+            android:label="@string/ServiceName"
             android:name="core.services.Hub"
             android:exported="true"
             />
