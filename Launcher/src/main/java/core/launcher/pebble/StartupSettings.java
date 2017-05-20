@@ -155,6 +155,7 @@ public class StartupSettings extends Activity implements Signals,ServiceConnecti
      * **********************************************************************/
     @Override
     public void push(Bundle UpdateSnapshot) {
+        if (UpdateSnapshot == null) return;
         UpdateContent =  UpdateSnapshot;
         ViewUpdate.post(this);
     }
