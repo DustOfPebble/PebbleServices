@@ -22,9 +22,9 @@ import core.services.Hub;
 import core.services.Signals;
 import core.services.Weather.WeatherKeys;
 
-public class StartupSettings extends Activity implements Signals,ServiceConnection, Runnable {
+public class Summary extends Activity implements Signals,ServiceConnection, Runnable {
 
-    private static final String LogTag = StartupSettings.class.getSimpleName();
+    private static final String LogTag = Summary.class.getSimpleName();
     private static final Map<Integer,Integer> IconsOf = new Icons();
 
     private TextView CallsCounter = null;
@@ -135,7 +135,7 @@ public class StartupSettings extends Activity implements Signals,ServiceConnecti
             LiveService.RegisterListener(this);
             LiveService.query();
 
-            Intent ActivityCallBack = new Intent(this, StartupSettings.class);
+            Intent ActivityCallBack = new Intent(this, Summary.class);
             LiveService.setNotificationCallback(ActivityCallBack);
         }
     }

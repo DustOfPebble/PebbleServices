@@ -15,7 +15,7 @@
         android:theme="@style/AppTheme"
     >
         <activity
-            android:name="core.launcher.pebble.StartupSettings"
+            android:name="core.launcher.pebble.Summary"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleInstance"
             >

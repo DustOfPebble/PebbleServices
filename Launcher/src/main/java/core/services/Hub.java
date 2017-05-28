@@ -25,6 +25,7 @@ import lib.smartwatch.SmartwatchManager;
 public class Hub extends Service implements Queries, SmartwatchEvents {
     private static final String LogTag = Hub.class.getSimpleName();
 
+    private boolean Initializing;
     private boolean isRunning;
     private boolean isWaitingConnectivity;
 
@@ -43,10 +44,7 @@ public class Hub extends Service implements Queries, SmartwatchEvents {
 
     private final int ID = R.string.ServiceWeather;
 
-    public Hub(){
-        Connector = new Junction();
-        isRunning = false;
-    }
+    public Hub(){ Initializing = true; }
 
     private SmartwatchBundle make(Bundle Snapshot) {
         SmartwatchBundle WatchSet = new SmartwatchBundle();
@@ -118,19 +116,24 @@ public class Hub extends Service implements Queries, SmartwatchEvents {
     @Override
     public void onCreate(){
         super.onCreate();
-        WatchConnector = new SmartwatchManager(getBaseContext(),this, SmartwatchConstants.WatchUUID);
-        AccessNetwork = new Network(this);
 
+        if (Initializing)  {
+            Connector = new Junction();
+            WatchConnector = new SmartwatchManager(getBaseContext(),this, SmartwatchConstants.WatchUUID);
+            AccessNetwork = new Network(this);
+            DataMiner = new Miner(this);
+            WakeUp = new WakeUp(this);
+            PhoneEvents = new EventsCatcher();
+            Initializing = false;
+        }
         Connector.RegisterProvider(this);
-        DataMiner = new Miner(this);
-        WakeUp = new WakeUp(this);
         isRunning = false;
         isWaitingConnectivity = false;
+
+        PhoneEvents.enableReceiver(getBaseContext());
+
         NextUpdateTimeStamps =  System.currentTimeMillis() + SleepDelay;
         WakeUp.setNext(SleepDelay);
-
-        PhoneEvents = new EventsCatcher();
-        PhoneEvents.enableReceiver(getBaseContext());
     }
 
     @Override
