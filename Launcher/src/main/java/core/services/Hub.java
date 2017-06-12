@@ -31,6 +31,7 @@ public class Hub extends Service implements Queries, SmartwatchEvents {
 
     private SmartwatchManager WatchConnector = null;
     private Junction Connector = null;
+    private Logger DebugLog = null;
 
     private Network AccessNetwork = null;
     private Miner DataMiner = null;
@@ -45,6 +46,8 @@ public class Hub extends Service implements Queries, SmartwatchEvents {
     private final int ID = R.string.ServiceWeather;
 
     public Hub(){ Initializing = true; }
+
+    public void Log(String Tag,String Message ) { DebugLog.debug(Tag,Message); }
 
     private SmartwatchBundle make(Bundle Snapshot) {
         SmartwatchBundle WatchSet = new SmartwatchBundle();
@@ -85,7 +88,7 @@ public class Hub extends Service implements Queries, SmartwatchEvents {
      **************************************************************/
     public void Enabled() {
         if (!isWaitingConnectivity) return;
-        Log.d(LogTag, "Connectivity enabled --> Updating");
+        Log(LogTag, "Connectivity enabled --> Updating");
         DataMiner.start();
     }
 
@@ -107,7 +110,7 @@ public class Hub extends Service implements Queries, SmartwatchEvents {
         pushNotification(getResources().getString(R.string.WeatherInfoFetched));
         Connector.push(Snapshot);
         if (!WatchConnector.isConnected()) return;
-        Log.d(LogTag, "Pushing --> Smartwatch");
+        Log(LogTag, "Pushing --> Smartwatch");
         WatchConnector.send(make(Snapshot));
     }
     /**************************************************************
@@ -124,8 +127,11 @@ public class Hub extends Service implements Queries, SmartwatchEvents {
             DataMiner = new Miner(this);
             WakeUp = new WakeUp(this);
             PhoneEvents = new EventsCatcher();
+            DebugLog = new Logger(this);
             Initializing = false;
         }
+        DebugLog.Live(true);
+
         Connector.RegisterProvider(this);
         isRunning = false;
         isWaitingConnectivity = false;
@@ -139,7 +145,7 @@ public class Hub extends Service implements Queries, SmartwatchEvents {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (!isRunning) {
-            Log.d(LogTag, "Starting service ...");
+            Log(LogTag, "Starting service ...");
             isRunning = true;
         }
 
@@ -150,7 +156,7 @@ public class Hub extends Service implements Queries, SmartwatchEvents {
 
         isWaitingConnectivity = false;
         if (AccessNetwork.isConnected()) {
-            Log.d(LogTag, "Service started with connectivity enabled ==> Updating");
+            Log(LogTag, "Service started with connectivity enabled ==> Updating");
             DataMiner.start();
         }
 
@@ -159,13 +165,13 @@ public class Hub extends Service implements Queries, SmartwatchEvents {
 
     @Override
     public IBinder onBind(Intent intent) {
-        Log.d(LogTag, "Binding service ...");
+        Log(LogTag, "Binding service ...");
         return Connector;
     }
 
     @Override
     public void onDestroy() {
-        Log.d(LogTag, "Service is about to quit !");
+        Log(LogTag, "Service is about to quit !");
         super.onDestroy();
     }
 
@@ -191,7 +197,7 @@ public class Hub extends Service implements Queries, SmartwatchEvents {
         if (!WatchConnector.isConnected()) PhoneEvents.resetCount();
         else {
             Connector.push(PhoneEvents.History());
-            Log.d(LogTag, "Pushing --> Smartwatch");
+            Log(LogTag, "Pushing --> Smartwatch");
             WatchConnector.send(make(PhoneEvents.History()));
         }
 
@@ -201,6 +207,6 @@ public class Hub extends Service implements Queries, SmartwatchEvents {
 
     @Override
     public void requestUpdate() {
-        Log.d(LogTag, "Watch requesting update ");
+        Log(LogTag, "Watch requesting update ");
     }
 }

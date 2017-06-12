@@ -45,6 +45,7 @@ public class Miner {
         isRunning = false;
         if (Downloaded == null) {
             Listener.Update(null);
+            Listener.Log(LogTag, "Download failed !");
             return;
         }
 
@@ -64,10 +65,11 @@ public class Miner {
             Bundle WeatherInfo = new Bundle();
             WeatherInfo.putInt(WeatherKeys.WeatherID, WeatherID);
             WeatherInfo.putInt(WeatherKeys.TemperatureID, Temperature);
+            Listener.Log(LogTag, "Weather informations processed.");
             Listener.Update(WeatherInfo);
 
         } catch (Exception Error) {
-            Log.d(LogTag, "Error in JSon processing => "+ Downloaded);
+            Listener.Log(LogTag, "Error in JSon processing => "+ Downloaded);
             Listener.Update(new Bundle());
         }
     }

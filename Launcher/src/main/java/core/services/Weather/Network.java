@@ -29,8 +29,9 @@ public class Network implements OnNetworkActiveListener {
     @Override
     public void onNetworkActive() {
         NetworkInfo Status = Connectivity.getActiveNetworkInfo();
+        Service.Log(LogTag, "Network Listener called !" );
         if (Status == null) return;
-        if (!Status.isAvailable()) return ;
+        if (!Status.isAvailable()) return;
         if (!Status.isConnected()) return;
         Service.Enabled();
     }

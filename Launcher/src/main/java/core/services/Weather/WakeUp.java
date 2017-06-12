@@ -26,19 +26,19 @@ public class WakeUp extends BroadcastReceiver {
     private static final String Coffee = "Cafeine";
     private Intent ServiceStarter;
     private Intent WakeUpEvent = null;
-    private Context Service =  null;
+    private Hub Service =  null;
 
-    public WakeUp(Context ServiceContext){
+    public WakeUp(Hub ServiceContext){
         Service = ServiceContext;
-        DreamBox = (PowerManager) ServiceContext.getSystemService(Service.POWER_SERVICE);
-        Trigger = (AlarmManager) ServiceContext.getSystemService(Service.ALARM_SERVICE);
+        DreamBox = (PowerManager) Service.getSystemService(Service.POWER_SERVICE);
+        Trigger = (AlarmManager) Service.getSystemService(Service.ALARM_SERVICE);
         StayAwake = DreamBox.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, Coffee);
 
         ServiceStarter = new Intent(ServiceContext, Hub.class);
 
         WakeUpFilter  = new IntentFilter();
         WakeUpFilter.addAction(WakeUpService);
-        ServiceContext.registerReceiver(this, WakeUpFilter);
+        Service.registerReceiver(this, WakeUpFilter);
 
         WakeUpEvent = new Intent(WakeUpService);
     }
@@ -47,7 +47,7 @@ public class WakeUp extends BroadcastReceiver {
         ID++;
         PendingIntent WaitingEvent = PendingIntent.getBroadcast(Service, ID, WakeUpEvent, PendingIntent.FLAG_ONE_SHOT);
         Trigger.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + SleepDelay, WaitingEvent);
-        Log.d(LogTag, "Setting a Wake Up in "+SleepDelay+"ms");
+        Service.Log(LogTag, "Setting a Wake Up in "+SleepDelay+"ms");
     }
 
     /**************************************************************
@@ -59,6 +59,6 @@ public class WakeUp extends BroadcastReceiver {
         if (!WakeUpService.equals(intent.getAction())) return;
         StayAwake.acquire(LifeTime);
         context.startService(ServiceStarter);
-        Log.d(LogTag, "Waking Up Service ["+ Hub.class.getSimpleName() +"]");
+        Service.Log(LogTag, "Waking Up Service ["+ Hub.class.getSimpleName() +"]");
     }
 }
