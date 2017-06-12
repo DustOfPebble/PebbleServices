@@ -47,7 +47,8 @@ public class Logger {
         if (Live) Log.d(Tag, Message);
         else {
             long UpdatedStamps = Calendar.getInstance().getTimeInMillis();
-            Logs.add(new LogEvent(Tag,Message,UpdatedStamps));
+            long Delay = UpdatedStamps-StoredStamps;
+            Logs.add(new LogEvent(Tag,Message,Delay));
             if (UpdatedStamps - StoredStamps < WriteDelay ) return;
             StoredStamps = UpdatedStamps;
             flush();
@@ -63,7 +64,7 @@ public class Logger {
         try {
             for (LogEvent Log : Logs) {
                 String Information = "";
-                Information += "Time:" + String.valueOf(Log.Stamps);
+                Information += "Time: +" + String.valueOf(Log.Stamps)+"ms";
                 Information += " >> "+ Log.Tag;
                 Information += " >> "+ Log.Message;
                 LogWriter.write(Information);
@@ -88,7 +89,7 @@ public class Logger {
 
 
     static private BufferedWriter WriterOf(File Selected) {
-        try { return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(Selected), "UTF-8")); }
+        try { return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(Selected,true), "UTF-8")); }
         catch (Exception FileError) {
             Log.d(LogTag, "Failed to create stream from " + Selected.getName());
             return null;
