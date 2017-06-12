@@ -18,6 +18,7 @@ public class Logger {
     private boolean Live = true;
     private long StoredStamps = 0;
     private File WorkingDirectory;
+    private ArrayList<LogEvent> Logs = new ArrayList<>();
 
     private class LogEvent {
         public String Tag;
@@ -30,7 +31,6 @@ public class Logger {
             this.Stamps = Stamps;
         }
     }
-    private ArrayList<LogEvent> Logs;
 
     public Logger(Hub Owner) {
         Service =  Owner;
@@ -83,7 +83,7 @@ public class Logger {
             WorkingDirectory.mkdir();
         }
         else WorkingDirectory = Service.getFilesDir();
-        Service.Log(LogTag, "Selecting workspace {"+ WorkingDirectory.getAbsolutePath()+"}" );
+        Log.d(LogTag, "Selecting workspace {"+ WorkingDirectory.getAbsolutePath()+"}" );
     }
 
 

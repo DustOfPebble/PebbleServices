@@ -54,6 +54,7 @@ public class Summary extends Activity implements Signals,ServiceConnection, Runn
         Permissions.Append(Manifest.permission.RECEIVE_SMS);
         Permissions.Append(Manifest.permission.READ_PHONE_STATE);
         Permissions.Append(Manifest.permission.INTERNET);
+        Permissions.Append(Manifest.permission.WRITE_EXTERNAL_STORAGE);
         Permissions.Append(Manifest.permission.ACCESS_NETWORK_STATE);
         Permissions.Append(Manifest.permission.CHANGE_NETWORK_STATE);
         Permissions.Append(Manifest.permission.ACCESS_FINE_LOCATION);
