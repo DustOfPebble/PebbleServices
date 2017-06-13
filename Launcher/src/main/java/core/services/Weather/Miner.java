@@ -2,7 +2,6 @@ package core.services.Weather;
 
 
 import android.os.Bundle;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -14,7 +13,7 @@ public class Miner {
 
     private Hub Listener;
     private Position GPS = null;
-    private core.services.Weather.Downloader Downloader = null;
+    private Downloader Fetcher = null;
     private CodesKeys IconOf = new CodesKeys();
 
     private static boolean isRunning = false;
@@ -35,12 +34,12 @@ public class Miner {
      *  Callbacks implementation from Workers
      **************************************************************/
     public void UpdateGPS(double Longitude, double Latitude) {
-        Downloader = new Downloader(this);
-        String Query = Downloader.setLocation(Longitude, Latitude);
-        Downloader.start(Query);
+        Fetcher = new Downloader(this);
+        String Query = Fetcher.setLocation(Longitude, Latitude);
+        Fetcher.start(Query);
     }
 
-    // Called by Downloader when finished and successful
+    // Called by Fetcher when finished and successful
     public void process(String Downloaded){
         isRunning = false;
         if (Downloaded == null) {
