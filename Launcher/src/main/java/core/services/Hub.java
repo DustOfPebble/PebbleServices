@@ -35,8 +35,8 @@ public class Hub extends Service implements Queries, SmartwatchEvents {
 
     private Network AccessNetwork = null;
     private Miner DataMiner = null;
-    private WakeUp WakeUp = null;
-    private long SleepDelay = 20*60*1000; // in ms
+//    private WakeUp WakeUp = null;
+    private long SleepDelay = 5*60*1000; // in ms
     private long NextUpdateTimeStamps = 0;
 
     private EventsCatcher PhoneEvents = null;
@@ -86,9 +86,12 @@ public class Hub extends Service implements Queries, SmartwatchEvents {
     /**************************************************************
      *  Callbacks implementation from NetworkEnabler
      **************************************************************/
-    public void Enabled() {
-        if (!isWaitingConnectivity) return;
-        Log(LogTag, "Connectivity enabled --> Updating");
+    public void ConnectivityEnabled() {
+        Log(LogTag, "Connectivity enabled !");
+        if (System.currentTimeMillis() < NextUpdateTimeStamps) return;
+        NextUpdateTimeStamps =  System.currentTimeMillis() + SleepDelay;
+        //if (!isWaitingConnectivity) return;
+        Log(LogTag, "Starting Weather update...");
         DataMiner.start();
     }
 
@@ -125,7 +128,7 @@ public class Hub extends Service implements Queries, SmartwatchEvents {
             WatchConnector = new SmartwatchManager(getBaseContext(),this, SmartwatchConstants.WatchUUID);
             AccessNetwork = new Network(this);
             DataMiner = new Miner(this);
-            WakeUp = new WakeUp(this);
+//            WakeUp = new WakeUp(this);
             PhoneEvents = new EventsCatcher();
             DebugLog = new Logger(this);
             Initializing = false;
@@ -139,7 +142,7 @@ public class Hub extends Service implements Queries, SmartwatchEvents {
         PhoneEvents.enableReceiver(getBaseContext());
 
         NextUpdateTimeStamps =  System.currentTimeMillis() + SleepDelay;
-        WakeUp.setNext(SleepDelay);
+//        WakeUp.setNext(SleepDelay);
     }
 
     @Override
@@ -150,12 +153,13 @@ public class Hub extends Service implements Queries, SmartwatchEvents {
         }
 
         if (System.currentTimeMillis() > NextUpdateTimeStamps) {
-            WakeUp.setNext(SleepDelay);
+//            WakeUp.setNext(SleepDelay);
             NextUpdateTimeStamps =  System.currentTimeMillis() + SleepDelay;
         }
 
-        isWaitingConnectivity = false;
+//        isWaitingConnectivity = true;
         if (AccessNetwork.isConnected()) {
+//            isWaitingConnectivity = false;
             Log(LogTag, "Service started with connectivity enabled ==> Updating");
             DataMiner.start();
         }

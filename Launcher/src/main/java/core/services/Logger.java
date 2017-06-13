@@ -13,10 +13,11 @@ import java.util.Calendar;
 public class Logger {
     private static final String LogTag = Logger.class.getSimpleName();
 
-    private final long WriteDelay = 5000*60;
+    private final long WriteDelay = 1000*60;
     private Hub Service = null;
     private boolean Live = true;
     private long StoredStamps = 0;
+    private long WriteStamps = 0;
     private File WorkingDirectory;
     private ArrayList<LogEvent> Logs = new ArrayList<>();
 
@@ -40,6 +41,7 @@ public class Logger {
     public void Live(boolean enabled) {
         Live = enabled;
         StoredStamps = Calendar.getInstance().getTimeInMillis();
+        WriteStamps = StoredStamps;
         Logs.clear();
     }
 
@@ -47,10 +49,11 @@ public class Logger {
         if (Live) Log.d(Tag, Message);
         else {
             long UpdatedStamps = Calendar.getInstance().getTimeInMillis();
-            long Delay = UpdatedStamps-StoredStamps;
-            Logs.add(new LogEvent(Tag,Message,Delay));
-            if (UpdatedStamps - StoredStamps < WriteDelay ) return;
+            long Delay = UpdatedStamps - StoredStamps;
             StoredStamps = UpdatedStamps;
+            Logs.add(new LogEvent(Tag,Message,Delay));
+            if (UpdatedStamps - WriteStamps < WriteDelay ) return;
+            WriteStamps = UpdatedStamps;
             flush();
             Logs.clear();
         }

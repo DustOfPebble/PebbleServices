@@ -33,6 +33,6 @@ public class Network implements OnNetworkActiveListener {
         if (Status == null) return;
         if (!Status.isAvailable()) return;
         if (!Status.isConnected()) return;
-        Service.Enabled();
+        Service.ConnectivityEnabled();
     }
 }
