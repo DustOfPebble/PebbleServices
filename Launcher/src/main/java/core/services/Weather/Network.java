@@ -22,17 +22,15 @@ public class Network implements OnNetworkActiveListener {
     public boolean isConnected() {
         NetworkInfo Status = Connectivity.getActiveNetworkInfo();
         if (Status == null) return false;
-        if (!Status.isAvailable()) return false;
-        return Status.isConnected();
+        return Status.isConnectedOrConnecting();
     }
 
     @Override
     public void onNetworkActive() {
-        NetworkInfo Status = Connectivity.getActiveNetworkInfo();
         Service.Log(LogTag, "Network Listener called !" );
+        NetworkInfo Status = Connectivity.getActiveNetworkInfo();
         if (Status == null) return;
-        if (!Status.isAvailable()) return;
-        if (!Status.isConnected()) return;
+        if (!Status.isConnectedOrConnecting()) return;
         Service.ConnectivityEnabled();
     }
 }
