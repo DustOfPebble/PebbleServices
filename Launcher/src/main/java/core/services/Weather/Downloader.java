@@ -77,10 +77,10 @@ public class Downloader extends Thread  {
             }
             stream.close();
             connection.disconnect();
-            Log.d(LogTag, "Download Succeed ["+result.length()+" Bytes]");
+            Listener.Log(LogTag, "Download Succeed ["+result.length()+" Bytes]");
             Listener.process(result);
         } catch (Exception Error) {
-            Log.d(LogTag, "Download Failed ["+Error.getMessage()+"]");
+            Listener.Log(LogTag, "Download Failed ["+Error.getMessage()+"]");
             Listener.process(null);
         }
     }

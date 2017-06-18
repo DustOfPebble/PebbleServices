@@ -39,6 +39,8 @@ public class Miner {
         Fetcher.start(Query);
     }
 
+    public void  Log(String Tag, String Message) { Listener.Log(Tag,Message); }
+
     // Called by Fetcher when finished and successful
     public void process(String Downloaded){
         isRunning = false;

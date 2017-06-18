@@ -21,7 +21,7 @@ import lib.smartwatch.SmartwatchManager;
 
 public class Hub extends Service implements Queries, SmartwatchEvents {
     private static final String LogTag = Hub.class.getSimpleName();
-    private static final long WaitDelay = 10*60*1000; // in ms
+    private static final long WaitDelay = 30*60*1000; // in ms
     private static final long Now = 0;
 
     private boolean Initializing;

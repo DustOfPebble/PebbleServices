@@ -13,7 +13,7 @@ import java.util.Calendar;
 public class Logger {
     private static final String LogTag = Logger.class.getSimpleName();
 
-    private final long WriteDelay = 1000*60;
+    private final long WriteDelay = 5*1000*60;
     private Hub Service = null;
     private boolean Live = true;
     private long StoredStamps = 0;
