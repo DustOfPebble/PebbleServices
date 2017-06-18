@@ -16,29 +16,26 @@ public class Miner {
     private Downloader Fetcher = null;
     private CodesKeys IconOf = new CodesKeys();
 
-    private static boolean isRunning = false;
+    public boolean isRunning = false;
 
     public Miner(Hub Parent) {
         Listener = Parent;
-        GPS = new Position(Listener, this);
+        GPS = new Position(Listener);
     }
 
     public void start() {
-        if (isRunning) return;
         isRunning = true;
-        GPS.update();
+        Coordinates LastKnownPosition = GPS.update();
+        if (LastKnownPosition == null) return;
+        Fetcher = new Downloader(this);
+        String Query = Fetcher.setLocation(LastKnownPosition);
+        Fetcher.start(Query);
     }
 
     private int ID(String Code) { return IconOf.Code(Code); }
     /**************************************************************
      *  Callbacks implementation from Workers
      **************************************************************/
-    public void UpdateGPS(double Longitude, double Latitude) {
-        Fetcher = new Downloader(this);
-        String Query = Fetcher.setLocation(Longitude, Latitude);
-        Fetcher.start(Query);
-    }
-
     public void  Log(String Tag, String Message) { Listener.Log(Tag,Message); }
 
     // Called by Fetcher when finished and successful

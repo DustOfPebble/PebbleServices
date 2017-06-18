@@ -15,24 +15,21 @@ public class Downloader extends Thread  {
     static private  String KeyAPI ="3d28c03d7fb2f5f4b4b7bc98367cc2cd";
 
     private Miner Listener = null;
-
     private String WeatherURL = null;
-
-
     private int maxLength = 10000; // in Bytes
 
     public Downloader(Miner Parent) {
         Listener = Parent;
     }
 
-    public String setLocation(double Longitude, double Latitude){
+    public String setLocation(Coordinates KnownPosition){
         /********************************************************************************************
          * query template : api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={key}
          ********************************************************************************************/
         String Query = "http://";
         Query +=  Server;
         Query +=  Command;
-        Query += "lat="+String.valueOf(Latitude)+ "&lon="+String.valueOf(Longitude);
+        Query += "lat="+String.valueOf(KnownPosition.Latitude)+ "&lon="+String.valueOf(KnownPosition.Longitude);
         Query += "&appid="+KeyAPI;
         Log.d(LogTag,"Download :["+Query+"]");
         return  Query;

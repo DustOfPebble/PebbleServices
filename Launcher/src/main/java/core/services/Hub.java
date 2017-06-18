@@ -87,9 +87,10 @@ public class Hub extends Service implements Queries, SmartwatchEvents {
      *  Callbacks implementation from NetworkEnabler
      **************************************************************/
     public void ConnectivityEnabled() {
-        Log(LogTag, "Connectivity enabled !");
+        //Log(LogTag, "Connectivity enabled !");
         if (System.currentTimeMillis() < NextUpdateTimeStamps) return;
         //if (!isWaitingConnectivity) return;
+        if (DataMiner.isRunning) return;
         Log(LogTag, "Starting Weather update...");
         DataMiner.start();
     }

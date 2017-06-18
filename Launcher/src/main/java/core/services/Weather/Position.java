@@ -9,31 +9,26 @@ public class Position {
 
     private static final String LogTag = Position.class.getSimpleName();
 
-    private Miner Listener = null;
     private Context WeatherService = null;
     private LocationManager GPS = null;
 
-public Position(Context Service, Miner Parent) {
-        Listener = Parent;
-        WeatherService =  Service;
-    }
+public Position(Context Service) { WeatherService =  Service; }
 
     @SuppressWarnings({"MissingPermission"})
-    public void update() {
+    public Coordinates update() {
         if (GPS == null) GPS = (LocationManager) WeatherService.getSystemService(Context.LOCATION_SERVICE);
-        if (GPS == null) return;
+        if (GPS == null) return null;
         Location Updated;
 
         Updated = GPS.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         if (Updated != null) {
-            Listener.UpdateGPS(Updated.getLongitude(),Updated.getLatitude());
-            return;
+            return new Coordinates(Updated.getLongitude(),Updated.getLatitude());
         }
         Updated = GPS.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         if (Updated != null) {
-            Listener.UpdateGPS(Updated.getLongitude(),Updated.getLatitude());
-            return;
+            return new Coordinates(Updated.getLongitude(),Updated.getLatitude());
         }
+        return null;
     }
 
 }
