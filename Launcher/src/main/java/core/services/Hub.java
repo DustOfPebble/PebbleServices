@@ -136,7 +136,7 @@ public class Hub extends Service implements Queries, SmartwatchEvents {
             DebugLog = new Logger(this);
             Initializing = false;
         }
-        DebugLog.Live(false);
+        DebugLog.Live(true);
 
         Connector.RegisterProvider(this);
         isRunning = false;
